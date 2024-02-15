@@ -1,0 +1,64 @@
+---
+title: Popup
+section: 5
+tags: []
+showRightSideBar: false
+---
+import Playground from '../../components/Playground.astro'
+
+# Popup
+
+The popup provides a custom overlay that displays contextual information for organization chart data.
+The position of the popup relative to the clicked item can be configured with the `popupPosition` prop.
+To adjust the popup visualization, add a custom React component using the `renderPopup` prop.
+
+<Playground
+    code={`
+
+    function MyPopupComponent({ item: { name } }: RenderPopupProps<CustomOrgChartItem>) {
+      return <div className="popup">{name}</div>
+    }
+
+    function App () {
+      return (
+        <OrgChart data={data}
+          popupPosition="north-east"
+          renderPopup={MyPopupComponent}
+        ></OrgChart>
+      )
+    }
+`}
+    data={`
+    [
+     {
+       "id": 1,
+       "position": "Chief Executive Officer",
+       "name": "Eric Joplin",
+       "email": "ejoplin@yoyodyne.com",
+       "status": "present",
+       "subordinates": [2, 3, 15]
+     },
+     {
+       "id": 2,
+       "position": "Senior Executive Assistant",
+       "name": "Alexander Burns",
+       "email": "aburns@yoyodyne.com",
+       "status": "busy"
+     },
+     {
+       "id": 3,
+       "position": "Junior Executive Assistant",
+       "name": "Linda Newland",
+       "email": "lnewland@yoyodyne.com",
+       "status": "travel"
+     }
+   ]
+  `}
+   css={`
+    .popup {
+        background-color: tomato;
+        padding: 10px;
+        border-radius: 10px;
+    }
+`}
+/>

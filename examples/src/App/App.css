@@ -1,0 +1,90 @@
+html,
+body,
+#root {
+  margin: 0;
+  height: 100%;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+}
+header {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  font-weight: 700;
+  align-items: center;
+
+  .description {
+    font-family: sans-serif;
+    font-weight: normal;
+    margin: 0 10px;
+  }
+}
+.sidebar {
+  width: 400px;
+  background: #efefef;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  font-family: Roboto, sans-serif;
+}
+
+.sidebar-overview {
+  position: relative;
+}
+
+.info-panel {
+  background-color: white;
+  width: 90%;
+  bottom: 30px;
+  left: 10px;
+  padding: 5px 15px;
+  border-radius: 3px;
+}
+
+.sidebar-controls {
+  position: relative;
+}
+
+.zoom-to-item {
+ background: url("data:image/svg+xml,%3C%3Fxml version='1.0' encoding='utf-8'%3F%3E%3C!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.1//EN' 'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'%3E%3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='16px' height='16px' viewBox='0.5 16.5 16 16' enable-background='new 0.5 16.5 16 16' xml:space='preserve'%3E%3Cg%3E%3Cpath fill='%23666666' d='M8.5,16.5c-4.418,0-8,3.582-8,8s3.582,8,8,8c4.418,0,8-3.582,8-8S12.918,16.5,8.5,16.5z M13.5,25.5h-4v4h-2v-4h-4v-2h4v-4h2v4h4V25.5z'/%3E%3C/g%3E%3C/svg%3E") 50% 50% no-repeat;
+}
+
+.custom-context-menu-button {
+  color: red;
+}
+
+.dashed-edge {
+  color: #665008;
+  stroke-dasharray: 3px;
+  stroke-dashoffset: 6px;
+}
+
+.rd-edge {
+  color: #336699;
+}
+
+.popup-title {
+  font-size: 16px;
+  font-family: 'Roboto', sans-serif;
+  color: steelblue;
+  margin-bottom: 10px;
+  display: flex;
+  gap: 10px
+}
+
+.popup-close-button {
+  width: 18px;
+  height: 18px;
+  border: none;
+  cursor: pointer;
+  background: url("data:image/svg+xml,%3C%3Fxml version='1.0' encoding='utf-8'%3F%3E%3C!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.1//EN' 'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'%3E%3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='16px' height='16px' viewBox='0.5 16.5 16 16' enable-background='new 0.5 16.5 16 16' xml:space='preserve'%3E%3Cg%3E%3Cpath fill='%234682b4' d='M8.5,16.5c-4.418,0-8,3.582-8,8s3.582,8,8,8c4.418,0,8-3.582,8-8S12.918,16.5,8.5,16.5z M13.097,26.975l-2.122,2.122L8.5,26.621l-2.475,2.476l-2.121-2.122L6.379,24.5l-2.475-2.475l2.121-2.122L8.5,22.379l2.475-2.476 l2.122,2.122L10.621,24.5L13.097,26.975z'/%3E%3C/g%3E%3C/svg%3E") no-repeat 50% 50%;
+}
+
+.popup-select {
+  width: 100%;
+}

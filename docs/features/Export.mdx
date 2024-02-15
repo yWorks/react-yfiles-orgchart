@@ -1,0 +1,95 @@
+---
+title: Export Capabilities
+section: 10
+tags: []
+showRightSideBar: false
+---
+import Playground from '../../components/Playground.astro'
+
+# Export Capabilities
+
+The component allows users to export either the entire diagram or a specific part of it in SVG or PNG format.
+Furthermore, it incorporates a print function that leverages the browser's capabilities, enabling users to generate
+hard copies or save the diagram as PDF for offline access.
+
+Access to the corresponding export functions is provided through the `useOrgChartContext()` hook described above.
+
+<Playground
+    code={`
+function OrgChartWrapper() {
+  const { print, exportToSvg, exportToPng } = useOrgChartContext()!
+
+      return (
+        <>
+          <OrgChart data={data}></OrgChart>
+          <div className="toolbar">
+            <button className="toolbar-button" onClick={async () => await print({ scale: 2 })}>Print</button>
+            <button className="toolbar-button" onClick={async () => await exportToSvg({ scale: 2 })}>Export to SVG</button>
+            <button className="toolbar-button" onClick={async () => await exportToPng({ scale: 2 })}>Export to PNG</button>
+          </div>
+        </>
+      )
+    }
+
+    function App () {
+      return (
+        <OrgChartProvider>
+          <OrgChartWrapper></OrgChartWrapper>
+        </OrgChartProvider>
+      )
+    }
+`}
+    data={`
+    [
+     {
+       "id": 1,
+       "position": "Chief Executive Officer",
+       "name": "Eric Joplin",
+       "email": "ejoplin@yoyodyne.com",
+       "status": "present",
+       "subordinates": [2, 3, 15]
+     },
+     {
+       "id": 2,
+       "position": "Senior Executive Assistant",
+       "name": "Alexander Burns",
+       "email": "aburns@yoyodyne.com",
+       "status": "busy"
+     },
+     {
+       "id": 3,
+       "position": "Junior Executive Assistant",
+       "name": "Linda Newland",
+       "email": "lnewland@yoyodyne.com",
+       "status": "travel"
+     }
+   ]
+  `}
+    css={`
+        .toolbar {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background-color: #393939;
+            border-radius: 10px;
+            padding: 5px;
+        }
+
+        .toolbar-button {
+            outline: none;
+            border: none;
+            background-color: #393939;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease 0s, border-color 0.3s ease 0s;
+            font-size: 16px;
+            padding: 0.5rem 1.2rem 0.5rem 0.8rem;
+            border-radius: 10px;
+        }
+
+        .toolbar-button:hover {
+            background-color: #2b2b2b;
+        }
+    `
+    }
+/>

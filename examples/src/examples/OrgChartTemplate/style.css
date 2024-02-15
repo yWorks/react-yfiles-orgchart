@@ -1,0 +1,14 @@
+.app {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    height: 100%;
+    font-family: 'Roboto', sans-serif;
+}
+
+.graph-component-container {
+    display: flex;
+    flex-direction: column;
+    justify-items: stretch;
+    position: relative;
+}

@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.idea/workspace.xml
+license.json
+yfiles-license.json
+*.tsbuildinfo
+.tsup/
+package-lock.json

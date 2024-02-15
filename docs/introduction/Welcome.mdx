@@ -1,0 +1,51 @@
+---
+title: Welcome
+section: 0
+tags: []
+showRightSideBar: false
+---
+import Playground from '../../components/Playground.astro'
+
+# Welcome to the yFiles React Organization Chart Component
+
+Organization charts serve as invaluable tools for illustrating hierarchical structures within a company or any other entity. They offer a visual representation of relationships and reporting structures, making it easier to understand roles, responsibilities, and the overall organization's hierarchy.
+
+Our powerful and versatile React component based on the [yFiles](https://www.yworks.com/yfiles-overview) library, allows you to seamlessly incorporate dynamic and interactive organization charts into your applications. This enhances the user experience and facilitates an intuitive exploration of complex organizational setups.
+
+Refer to the [Getting Started](gettingstarted) section to learn how to effortlessly integrate an organization chart with our data into your React application. [Features](features) details how to customize the component.
+
+The API documentation provides specific information about the components, e.g. the [OrgChart](../components/orgchart) component, hooks and types.
+
+<Playground
+  code={`
+    function App() {
+      return <OrgChart data={data}></OrgChart>
+    }
+  `}
+  data={`
+    [
+     {
+       "id": 1,
+       "position": "Chief Executive Officer",
+       "name": "Eric Joplin",
+       "email": "ejoplin@yoyodyne.com",
+       "status": "present",
+       "subordinates": [2, 3, 15]
+     },
+     {
+       "id": 2,
+       "position": "Senior Executive Assistant",
+       "name": "Alexander Burns",
+       "email": "aburns@yoyodyne.com",
+       "status": "busy"
+     },
+     {
+       "id": 3,
+       "position": "Junior Executive Assistant",
+       "name": "Linda Newland",
+       "email": "lnewland@yoyodyne.com",
+       "status": "travel"
+     }
+   ]
+  `} 
+/>

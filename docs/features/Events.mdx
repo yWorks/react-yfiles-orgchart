@@ -1,0 +1,59 @@
+---
+title: Events
+section: 7
+tags: []
+showRightSideBar: false
+---
+import Playground from '../../components/Playground.astro'
+
+# Events
+
+The organization chart component features events that notify users when a item is either focused, selected or hovered over. This functionality provides the flexibility to respond to these state changes, allowing for the dynamic updating of external information panels, among other possibilities.
+Note that, to optimize performance, it might be necessary to use cache these functions.
+
+<Playground
+  code={`
+   function App() {
+     const onItemFocus = useCallback(
+       (item: CustomOrgChartItem | null) => item && console.log(\`focused: \${item.name}\`),
+       []
+     )
+     const onItemSelect = useCallback(
+       (selectedItems: CustomOrgChartItem[]) =>
+         console.log(selectedItems.length ? \`selected: \${selectedItems[0].name}\` : \'nothing selected\'),
+       []
+     )
+     const onItemHover = useCallback(
+       (item: CustomOrgChartItem | null) => item && console.log(\`hovered: \${item.name}\`),
+       []
+     )
+     return <OrgChart data={data} onItemFocus={onItemFocus} onItemSelect={onItemSelect} onItemHover={onItemHover}></OrgChart>
+   }
+`}
+  data={`
+    [
+     {
+       "id": 1,
+       "position": "Chief Executive Officer",
+       "name": "Eric Joplin",
+       "email": "ejoplin@yoyodyne.com",
+       "status": "present",
+       "subordinates": [2, 3, 15]
+     },
+     {
+       "id": 2,
+       "position": "Senior Executive Assistant",
+       "name": "Alexander Burns",
+       "email": "aburns@yoyodyne.com",
+       "status": "busy"
+     },
+     {
+       "id": 3,
+       "position": "Junior Executive Assistant",
+       "name": "Linda Newland",
+       "email": "lnewland@yoyodyne.com",
+       "status": "travel"
+     }
+   ]
+  `}
+/>

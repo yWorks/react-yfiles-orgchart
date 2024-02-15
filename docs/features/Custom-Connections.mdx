@@ -1,0 +1,102 @@
+---
+title: Custom Connections
+section: 2
+tags: []
+showRightSideBar: false
+---
+import Playground from '../../components/Playground.astro'
+
+The organizational chart component includes a rendering feature that enables users to customize connection visualizations. It grants control over parameters such as stroke, bend smoothing, thickness, and arrow styles.
+The rendering process employs an SVG path element, allowing for the utilization of CSS to customize the stroke or incorporate transitions by defining a className. Note that, to optimize performance and depending on the implementation,
+it might be necessary to use memoize the rendering function.
+
+<Playground
+  code={`
+    function connectionStyles(
+      source: CustomOrgChartItem,
+      target: CustomOrgChartItem,
+    ): ConnectionStyle | undefined {
+      if (source.assistant || target.assistant) {
+        return {
+          thickness: 6,
+          className: "dashed-line",
+          targetArrow: {type: 'triangle'}
+        };
+      } else {
+        return { thickness: 2 };
+      }
+    }
+  
+    function App() {
+      return <OrgChart data={data} connectionStyles={connectionStyles}></OrgChart>;
+    }
+`}
+  data={`
+    [
+      {
+    position: 'Chief Executive Officer',
+    name: 'Eric Joplin',
+    email: 'ejoplin@yoyodyne.com',
+    phone: '555-0100',
+    fax: '555-0101',
+    businessUnit: 'Executive Unit',
+    status: 'present',
+    subordinates: [1, 2, 3, 4, 5, 6],
+    id: 0
+  },
+  {
+    position: 'Chief Executive Assistant',
+    name: 'Gary Roberts',
+    email: 'groberts@yoyodyne.com',
+    phone: '555-0100',
+    fax: '555-0101',
+    businessUnit: 'Executive Unit',
+    status: 'present',
+    assistant: true,
+    subordinates: [70, 71],
+    id: 1
+  },
+  {
+    position: 'Vice President of Production',
+    name: 'Amy Kain',
+    email: 'akain@yoyodyne.com',
+    phone: '555-0106',
+    fax: '555-0107',
+    businessUnit: 'Production',
+    status: 'unavailable',
+    subordinates: [55, 56, 57, 58, 59],
+    id: 2
+  },
+  {
+    position: 'Vice President of Sales',
+    name: 'Richard Fuller',
+    email: 'rfuller@yoyodyne.com',
+    phone: '555-0134',
+    fax: '555-0135',
+    businessUnit: 'Sales',
+    status: 'busy',
+    subordinates: [49, 50],
+    id: 3
+  },
+  {
+    position: 'Vice President of Engineering',
+    name: 'Mildred Shark',
+    email: 'mshark@yoyodyne.com',
+    phone: '555-0156',
+    fax: '555-0157',
+    businessUnit: 'Engineering',
+    status: 'travel',
+    subordinates: [21],
+    id: 4
+  }
+  ]
+  `}
+  css={`
+    .dashed-line {
+        color: tomato;
+        stroke-dasharray: 3px;
+        stroke-dashoffset: 6px;
+    }
+`
+  }
+/>

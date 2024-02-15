@@ -1,0 +1,117 @@
+---
+title: Custom Items
+section: 1
+tags: []
+showRightSideBar: false
+---
+import Playground from '../../components/Playground.astro'
+
+# Customizing Items
+
+This component comes with styling and options suitable for general organizational charts. The items in the `data` array must satisfy the `OrgChartItem` type.
+
+```ts
+type OrgChartItem = {
+  id: any
+  subordinates?: any[]
+  assistant?: boolean
+  width?: number
+  height?: number
+}
+```
+<ul className="list-disc ml-4">
+  <li>The optional `subordinates` define the parent-child relationships and should only contain ids of other data items.</li>
+  <li>If `assistant` is `true`, an item is an assistant to their superior and is placed on a separate layer between their superior and the non-assistant subordinates.</li>
+  <li>The optional `width` and `height` define the render size of the item. If no values are given, the size is determined automatically.</li>
+</ul>
+
+The default visualization expects data items of type `CustomOrgChartItem<Employee>` where `Employee` is defined like this:
+```ts
+type Employee = {
+  name?: string
+  status?: string
+  position?: string
+  email?: string
+  phone?: string
+  icon?: string
+}
+```
+
+Moreover, the visualization of items is highly customizable. You can specify custom React components to render the items according to your specific requirements.
+Note that, to optimize performance and depending on the implementation, it might be necessary to use memoization for this custom component.
+
+<Playground
+  code={`
+  
+    type Employee = {
+      name?: string
+      status?: string
+      position?: string
+      email?: string
+      phone?: string
+    }
+  
+    function MyOrgChartItem(props: RenderItemProps<CustomOrgChartItem<Employee>>) {
+      const { dataItem } = props
+      return (
+        <div className={\`\${dataItem.name === "Eric Joplin" ? "ceo" : "employee"} item\`}>
+          <div >{dataItem.name}</div>
+        </div>
+      )
+    }
+  
+    function App () {
+      return (
+      <OrgChart
+        data={data}
+        renderItem={MyOrgChartItem}
+        itemSize={{ width: 150, height: 100 }}
+      ></OrgChart>
+    )
+  }
+`}
+  data={`
+    [
+     {
+       "id": 1,
+       "position": "Chief Executive Officer",
+       "name": "Eric Joplin",
+       "email": "ejoplin@yoyodyne.com",
+       "status": "present",
+       "subordinates": [2, 3, 15]
+     },
+     {
+       "id": 2,
+       "position": "Senior Executive Assistant",
+       "name": "Alexander Burns",
+       "email": "aburns@yoyodyne.com",
+       "status": "busy"
+     },
+     {
+       "id": 3,
+       "position": "Junior Executive Assistant",
+       "name": "Linda Newland",
+       "email": "lnewland@yoyodyne.com",
+       "status": "travel"
+     }
+   ]
+  `}
+  css={`
+      .item {
+          display: flex;
+          height: 100%;
+          width: 100%;
+          align-items: center;
+          justify-content: center;
+          border-radius: 10px;
+      }
+
+      .ceo {
+          background-color: tomato;
+      }
+
+      .employee {
+          background-color: seagreen;
+      }`
+  }
+/>

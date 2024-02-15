@@ -1,0 +1,72 @@
+---
+title: Tooltips
+section: 3
+tags: []
+showRightSideBar: false
+---
+import Playground from '../../components/Playground.astro'
+
+# Tooltips
+
+Tooltips display specific information when hovering over an item. Configure the tooltip by setting a custom React component in the `renderTooltip` prop.
+The organization chart component provides a default tooltip that displays the name of a person:
+
+```tsx
+function OrganizationChart () {
+  return (
+    <OrgChart 
+      data={data} 
+      renderTooltip={OrgChartTooltipTemplate}>
+    </OrgChart>
+  )
+}
+```
+
+You can also specify custom React components to render the tooltips according to your specific requirements:
+
+<Playground
+  code={`
+  
+    function MyTooltipComponent({ data: { name } }: RenderTooltipProps<CustomOrgChartItem>) {
+      return <div style={{ backgroundColor: "tomato", padding: 5, borderRadius: 10, color: "white" }}>{name}</div>
+    }
+    
+    function App () {
+      return (
+        <OrgChart
+          data={data}
+          renderTooltip={MyTooltipComponent}
+        ></OrgChart>
+      )
+    }
+`}
+  data={`
+    [
+     {
+       "id": 1,
+       "position": "Chief Executive Officer",
+       "name": "Eric Joplin",
+       "email": "ejoplin@yoyodyne.com",
+       "status": "present",
+       "subordinates": [2, 3, 15]
+     },
+     {
+       "id": 2,
+       "position": "Senior Executive Assistant",
+       "name": "Alexander Burns",
+       "email": "aburns@yoyodyne.com",
+       "status": "busy"
+     },
+     {
+       "id": 3,
+       "position": "Junior Executive Assistant",
+       "name": "Linda Newland",
+       "email": "lnewland@yoyodyne.com",
+       "status": "travel"
+     }
+   ]
+  `}
+/>
+
+
+

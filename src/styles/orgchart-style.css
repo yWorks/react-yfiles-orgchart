@@ -1,0 +1,146 @@
+@import '@yworks/react-yfiles-core/dist/index.css';
+
+/* this rule is needed to detect if the stylesheet is loaded */
+#yfiles-react-stylesheet-detection {
+    font-size: 1px !important;
+    display: none;
+}
+
+.yfiles-react-present {
+    background-color: #76b041
+}
+
+.yfiles-react-busy {
+    background-color: #ab2346;
+}
+
+.yfiles-react-travel {
+    background-color: #a367dc;
+}
+
+.yfiles-react-unavailable {
+    background-color: #c1c1c1;
+}
+
+.yfiles-react-node-highlight {
+    box-shadow: 0 0 0 3px transparent, 4px 4px 5px #c0c0c0;
+    transition: box-shadow 0.5s ease-in-out;
+}
+
+.yfiles-react-node-highlight--selected {
+    box-shadow: 0 0 0 3px #ffbb33, 4px 4px 5px #c0c0c0;
+}
+
+.yfiles-react-node-highlight--hovered {
+    box-shadow: 0 0 0 3px #249ae7, 4px 4px 5px #c0c0c0;
+}
+
+.yfiles-react-detail-node {
+    font-family: 'Roboto', sans-serif;
+    display: flex;
+    flex-direction: column;
+    text-align: start;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+
+    background-color: #ffffff;
+    border: 1px solid #c0c0c0;
+    color: #000000;
+}
+
+.yfiles-react-detail-node__status-bar {
+    flex: 0 0 5px;
+}
+
+.yfiles-react-detail-node__content {
+    display: flex;
+    flex-direction: row;
+    flex: 1 1 auto;
+    width: 100%;
+    height: 100%;
+}
+
+.yfiles-react-detail-node__icon-container {
+    margin: 0.7em;
+}
+
+.yfiles-react-detail-node__icon {
+    width: 80px;
+    height: 100px;
+    object-fit: contain;
+}
+
+.yfiles-react-detail-node__data-container {
+    margin: 0.5em;
+    line-height: 1.5em;
+}
+
+.yfiles-react-detail-node__name {
+    color: #336699;
+    font-size: 20px;
+    margin-bottom: 5px;
+}
+
+.yfiles-react-detail-node__position {
+    font-size: 12px;
+    line-height: 1.2em;
+    text-transform: uppercase;
+}
+
+.yfiles-react-overview-node {
+    font-family: 'Roboto', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    font-size: 30px;
+    word-wrap: break-word;
+    overflow: hidden;
+    box-sizing: border-box;
+    padding: 0.3em 0.5em;
+    border: 1px solid #c0c0c0;
+}
+
+.yfiles-react-port {
+    transform: scale(1);
+    transition: 0.2s ease-in-out;
+    fill: #aaaaaa;
+}
+
+.yfiles-react-port:hover {
+    cursor: pointer;
+    transform: scale(1.5);
+    transition: 0.2s ease-in-out;
+}
+
+.yfiles-react-port__icon {
+    stroke: white;
+    stroke-width: 2px;
+    transition: 1s ease-in-out;
+}
+
+.yfiles-react-port__icon--expand {
+    transform: scaleY(6);
+}
+
+.yfiles-react-port__icon--collapse {
+    transform: scaleY(0);
+}
+
+.yfiles-react-controls__button--show-all {
+    background: url("data:image/svg+xml,%3C%3Fxml version='1.0' encoding='utf-8'%3F%3E%3C!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.1//EN' 'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'%3E%3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='16px' height='16px' viewBox='0.5 16.5 16 16' enable-background='new 0.5 16.5 16 16' xml:space='preserve'%3E%3Cg%3E%3Cline x1='2.5' x2='14.5' y1='24.5' y2='24.5' stroke='%23666666' stroke-width='2' stroke-miterlimit='10'%3E%3C/line%3E%3Cline x1='8.5' x2='8.5' y1='18.5' y2='30.5' stroke='%23666666' stroke-width='2' stroke-miterlimit='10'%3E%3C/line%3E%3Cline x1='4.257' x2='12.742' y1='20.258' y2='28.742' stroke='%23666666' stroke-width='2' stroke-miterlimit='10'%3E%3C/line%3E%3Cline x1='12.742' x2='4.257' y1='20.258' y2='28.742' stroke='%23666666' stroke-width='2' stroke-miterlimit='10'%3E%3C/line%3E%3C/g%3E%3C/svg%3E") no-repeat 50% 50%;
+}
+
+.yfiles-react-controls__button--show-all:disabled {
+    opacity: 0.2;
+}
+
+.yfiles-react-popup__content {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    font-family: "Roboto", sans-serif;
+}
+

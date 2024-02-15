@@ -1,0 +1,7 @@
+div.employee {
+    border: 3px solid #ff7957;
+}
+
+div.employee.position-ceo {
+    border: 3px solid #ff7957;
+}
