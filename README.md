@@ -371,5 +371,5 @@ function OrganizationChart () {
 
 Explore the possibilities of visualizing organizational structures with the yFiles Organization Chart Component. For further information about [yFiles for HTML](https://www.yworks.com/yfiles-overview) and our company, please visit [yWorks.com](https://www.yworks.com).
 
-For support or feedback, please reach out to [our support team](https://website.yworks.home/contact) or open an issue on GitHub. Happy diagramming!
+For support or feedback, please reach out to [our support team](https://www.yworks.com/contact) or open an [issue on GitHub](https://github.com/yWorks/react-yfiles-orgchart/issues). Happy diagramming!
 
