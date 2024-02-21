@@ -6,7 +6,7 @@ showRightSideBar: false
 ---
 import Playground from '../../components/Playground.astro'
 
-# Customizing Items
+# Custom Items
 
 This component comes with styling and options suitable for general organizational charts. The items in the `data` array must satisfy the `OrgChartItem` type.
 
@@ -42,7 +42,7 @@ Note that, to optimize performance and depending on the implementation, it might
 
 <Playground
   code={`
-  
+
     type Employee = {
       name?: string
       status?: string
@@ -50,7 +50,7 @@ Note that, to optimize performance and depending on the implementation, it might
       email?: string
       phone?: string
     }
-  
+
     function MyOrgChartItem(props: RenderItemProps<CustomOrgChartItem<Employee>>) {
       const { dataItem } = props
       return (
@@ -59,7 +59,7 @@ Note that, to optimize performance and depending on the implementation, it might
         </div>
       )
     }
-  
+
     function App () {
       return (
       <OrgChart
