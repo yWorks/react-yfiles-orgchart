@@ -227,7 +227,7 @@ function OrganizationChart () {
   return (
     <OrgChart 
       data={data} 
-      renderTooltip={OrgChartTooltipTemplate}>
+      renderTooltip={RenderOrgChartTooltip}>
     </OrgChart>
   )
 }

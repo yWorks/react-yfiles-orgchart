@@ -10,7 +10,7 @@ import Playground from '../../components/Playground.astro'
 
 The organizational chart component includes a rendering feature that enables users to customize connection visualizations. It grants control over parameters such as stroke, bend smoothing, thickness, and arrow styles.
 The rendering process employs an SVG path element, allowing for the utilization of CSS to customize the stroke or incorporate transitions by defining a className. Note that, to optimize performance and depending on the implementation,
-it might be necessary to use memoize the rendering function.
+it might be necessary to use [memoize](https://react.dev/reference/react/memo) the rendering function.
 
 <Playground
   code={`

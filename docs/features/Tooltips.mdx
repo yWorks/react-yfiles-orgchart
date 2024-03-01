@@ -14,9 +14,9 @@ The organization chart component provides a default tooltip that displays the na
 ```tsx
 function OrganizationChart () {
   return (
-    <OrgChart 
-      data={data} 
-      renderTooltip={OrgChartTooltipTemplate}>
+    <OrgChart
+      data={data}
+      renderTooltip={RenderOrgChartTooltip}>
     </OrgChart>
   )
 }
@@ -26,11 +26,11 @@ You can also specify custom React components to render the tooltips according to
 
 <Playground
   code={`
-  
+
     function MyTooltipComponent({ data: { name } }: RenderTooltipProps<CustomOrgChartItem>) {
       return <div style={{ backgroundColor: "tomato", padding: 5, borderRadius: 10, color: "white" }}>{name}</div>
     }
-    
+
     function App () {
       return (
         <OrgChart
@@ -48,6 +48,7 @@ You can also specify custom React components to render the tooltips according to
        "name": "Eric Joplin",
        "email": "ejoplin@yoyodyne.com",
        "status": "present",
+       "icon": "../assets/usericon_male1.svg",
        "subordinates": [2, 3, 15]
      },
      {
@@ -55,14 +56,16 @@ You can also specify custom React components to render the tooltips according to
        "position": "Senior Executive Assistant",
        "name": "Alexander Burns",
        "email": "aburns@yoyodyne.com",
-       "status": "busy"
+       "status": "busy",
+       "icon": "../assets/usericon_male3.svg",
      },
      {
        "id": 3,
        "position": "Junior Executive Assistant",
        "name": "Linda Newland",
        "email": "lnewland@yoyodyne.com",
-       "status": "travel"
+       "status": "travel",
+       "icon": "../assets/usericon_female1.svg",
      }
    ]
   `}
