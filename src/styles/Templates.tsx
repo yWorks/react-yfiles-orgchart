@@ -195,6 +195,11 @@ function findProperties(data: CustomOrgChartItem) {
 export function RenderOrgChartTooltip<TOrgChartItem extends OrgChartItem>({
   data
 }: RenderTooltipProps<TOrgChartItem>) {
+  // Currently, no tooltips are shown for edges.
+  if ('source' in data && 'target' in data) {
+    return null
+  }
+
   return (
     <div className="yfiles-react-tooltip">
       {stringifyData('name' in data ? data.name : data.id)}
