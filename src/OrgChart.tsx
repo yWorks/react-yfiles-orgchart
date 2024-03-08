@@ -122,7 +122,7 @@ export type CustomOrgChartItem<
 export type CustomOrgChartData<TCustomProps> = CustomOrgChartItem<TCustomProps>[]
 
 /**
- * The basic data type for the connections between date items visualized by the {@link OrgChart} component.
+ * The basic data type for the connections between data items visualized by the {@link OrgChart} component.
  */
 export interface OrgChartConnection {
   source: OrgChartItem
