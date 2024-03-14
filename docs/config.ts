@@ -4,7 +4,8 @@ export const SITE = {
   defaultLanguage: 'en_US',
   twitter: '@yworks',
   github: 'yWorks/react-yfiles-orgchart',
-  linkedin: 'yworks-gmbh'
+  linkedin: 'yworks-gmbh',
+  name: 'react-yfiles-orgchart'
 }
 
 export const OPEN_GRAPH = {
