@@ -31,8 +31,8 @@
     "dev": "tsup --watch --sourcemap --dts --format esm src/index.ts && api-extractor run --local",
     "build": "tsup --clean --dts --format esm src/index.ts && api-extractor run --local",
     "build-core": "cd ../../react-yfiles-core && npm run build",
-    "build-orgchart-docs": "npm run --prefix ../../astro/ build-docs react-yfiles-orgchart ../components/react-yfiles-orgchart/docs",
-    "build-orgchart-docs-full": "npm run build-core && npm run build && npm run build-orgchart-docs"
+    "build-docs": "npm run --prefix ../../astro/ build-docs react-yfiles-orgchart ../components/react-yfiles-orgchart/docs",
+    "build-docs-full": "npm run build-core && npm run build && npm run build-docs"
   },
   "peerDependencies": {
     "react": "^18.2.0",
