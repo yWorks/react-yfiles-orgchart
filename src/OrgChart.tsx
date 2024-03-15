@@ -264,10 +264,12 @@ export interface OrgChartProps<TOrgChartItem extends OrgChartItem, TNeedle> {
   incrementalLayout?: boolean
 }
 
-function checkStylesLoaded() {
+function checkStylesLoaded(root: HTMLElement | null) {
   const dummy = document.createElement('div')
   dummy.id = 'yfiles-react-stylesheet-detection'
-  document.body.appendChild(dummy)
+  const rootNode = root?.getRootNode() ?? document
+  const parent = rootNode === document ? document.body : rootNode
+  parent.appendChild(dummy)
   const computedStyle = getComputedStyle(dummy)
   const hasStyle = computedStyle.fontSize === '1px'
 
@@ -298,10 +300,6 @@ export function OrgChart<TOrgChartItem extends OrgChartItem = CustomOrgChartItem
   if (!checkLicense()) {
     return <LicenseError />
   }
-
-  useEffect(() => {
-    checkStylesLoaded()
-  }, [])
 
   const isWrapped = useOrgChartContextInternal()
   if (isWrapped) {
@@ -358,6 +356,10 @@ const OrgChartCore = withGraphComponent(
       return {
         graphManager
       }
+    }, [])
+
+    useEffect(() => {
+      checkStylesLoaded(graphComponent.div)
     }, [])
 
     useEffect(() => {
