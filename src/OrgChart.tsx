@@ -414,7 +414,9 @@ const OrgChartCore = withGraphComponent(
       setPortStylesToFirstOutgoingPorts(graphComponent.graph, interactive)
     }, [interactive, data])
 
-    useGraphSearch(graphComponent, searchNeedle, onSearch)
+    const graphSearch = useGraphSearch(graphComponent, searchNeedle, onSearch)
+    // provide search hits on the context
+    orgChartGraph.getSearchHits = () => graphSearch.matchingNodes.map(n => n.tag)
 
     return (
       <>

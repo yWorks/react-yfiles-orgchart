@@ -33,6 +33,7 @@ import {
   type LayoutGraph,
   LayoutMode,
   Mapper,
+  MutableRectangle,
   PlaceNodesAtBarycenterStage,
   PlaceNodesAtBarycenterStageData,
   Rect,
@@ -396,6 +397,30 @@ export class CollapsibleTree {
       ICommand.ZOOM_TO_CURRENT_ITEM.execute(null, this._graphComponent)
       this._graphComponent.focus()
     }
+  }
+
+  /**
+   * Zooms to the union-bounds of the given items.
+   *
+   * If the item is currently not visible, it will be unhidden together with its descendants.
+   */
+  zoomTo(items: IModelItem[]): void {
+    const targetBounds = new MutableRectangle()
+    items.forEach(item => {
+      if (item instanceof IEdge) {
+        const source = item.sourceNode!
+        const target = item.targetNode!
+        this.unhideNode(source)
+        this.unhideNode(target)
+        targetBounds.add(source.layout)
+        targetBounds.add(target.layout)
+      } else if (item instanceof INode) {
+        this.unhideNode(item)
+        targetBounds.add(item.layout)
+      }
+    })
+    this._graphComponent.focus()
+    this._graphComponent.zoomToAnimated(targetBounds.toRect().getEnlarged(200))
   }
 
   private unhideNode(item: INode) {
