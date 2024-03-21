@@ -5,6 +5,7 @@ tags: []
 showRightSideBar: false
 ---
 import Playground from '../../components/Playground-OrgChart.astro'
+import TypeLink from '../../components/TypeLink.astro'
 
 # Search
 
@@ -794,4 +795,5 @@ css={`
 `}
 />
 
-To further tailor the search functionality, developers can customize the process by registering a function to the `onSearch` event, which returns a boolean value indicating if the search was successful for the given item.
+To further tailor the search functionality, developers can customize the process by registering a function to the
+<TypeLink type="OrgChart" member="onSearch"/> event, which returns a boolean value indicating if the search was successful for the given item.

@@ -9,7 +9,8 @@ import TypeLink from '../../components/TypeLink.astro'
 
 # Custom Items
 
-This component comes with styling and options suitable for general organizational charts. The items in the `data` array must satisfy the <TypeLink type="OrgChartItem" /> type.
+This component comes with styling and options suitable for general organizational charts. The items in the
+<TypeLink type="OrgChart" member="data"/> array must satisfy the <TypeLink type="OrgChartItem" /> type.
 
 ```ts
 type OrgChartItemId = string | number;
@@ -25,9 +26,9 @@ interface OrgChartItem {
 }
 ```
 <ul className="list-disc ml-4">
-  <li>The optional `subordinates` define the parent-child relationships and should only contain ids of other data items.</li>
-  <li>If `assistant` is `true`, an item is an assistant to their superior and is placed on a separate layer between their superior and the non-assistant subordinates.</li>
-  <li>The optional `width` and `height` define the render size of the item. If no values are given, the size is determined automatically.</li>
+  <li>The optional <TypeLink type="OrgChartItem" member="subordinates"/> define the parent-child relationships and should only contain ids of other data items.</li>
+  <li>If <TypeLink type="OrgChartItem" member="assistant"/> is `true`, an item is an assistant to their superior and is placed on a separate layer between their superior and the non-assistant subordinates.</li>
+  <li>The optional <TypeLink type="OrgChartItem" member="width"/> and <TypeLink type="OrgChartItem" member="height"/> define the render size of the item. If no values are given, the size is determined automatically.</li>
 </ul>
 
 The default visualization expects data items of type `CustomOrgChartItem<Employee>` where `Employee` is defined like this:

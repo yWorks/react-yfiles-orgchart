@@ -5,12 +5,13 @@ tags: []
 showRightSideBar: false
 ---
 import Playground from '../../components/Playground-OrgChart.astro'
+import TypeLink from '../../components/TypeLink.astro'
 
 # Popup
 
 The popup provides a custom overlay that displays contextual information for organization chart data.
-The position of the popup relative to the clicked item can be configured with the `popupPosition` prop.
-To adjust the popup visualization, add a custom React component using the `renderPopup` prop.
+The position of the popup relative to the clicked item can be configured with the <TypeLink type="OrgChart" member="popupPosition"/> prop.
+To adjust the popup visualization, add a custom React component using the <TypeLink type="OrgChart" member="renderPopup"/> prop.
 
 <Playground
     code={`

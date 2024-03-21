@@ -5,10 +5,12 @@ tags: []
 showRightSideBar: false
 ---
 import Playground from '../../components/Playground-OrgChart.astro'
+import TypeLink from '../../components/TypeLink.astro'
 
 # Context Menu
 The context menu provides context-specific actions for items.
-Set the `contextMenuItems` to populate the context menu with actions. The organization chart component introduces a default context menu which provides actions to interact with the chart.
+Set the <TypeLink type="OrgChart" member="contextMenuItems"/> to populate the context menu with actions.
+The organization chart component introduces a default context menu which provides actions to interact with the chart.
 
 ```tsx
 function OrganizationChart() {
@@ -18,7 +20,7 @@ function OrganizationChart() {
 }
 ```
 
-To adjust the context menu visualization, add a custom React component using the `renderContextMenu` prop.
+To adjust the context menu visualization, add a custom React component using the <TypeLink type="OrgChart" member="renderContextMenu"/> prop.
 
 <Playground
     code={`
