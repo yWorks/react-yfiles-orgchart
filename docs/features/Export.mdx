@@ -5,6 +5,7 @@ tags: []
 showRightSideBar: false
 ---
 import Playground from '../../components/Playground-OrgChart.astro'
+import TypeLink from '../../components/TypeLink.astro'
 
 # Export Capabilities
 
@@ -12,7 +13,7 @@ The component allows users to export either the entire diagram or a specific par
 Furthermore, it incorporates a print function that leverages the browser's capabilities, enabling users to generate
 hard copies or save the diagram as PDF for offline access.
 
-Access to the corresponding export functions is provided through the `useOrgChartContext()` hook described above.
+Access to the corresponding export functions is provided through the <TypeLink type="useOrgChartContext" /> hook described above.
 
 <Playground
     code={`
