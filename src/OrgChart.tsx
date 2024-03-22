@@ -423,10 +423,17 @@ const OrgChartCore = withGraphComponent(
       graphComponent.fitGraphBounds()
     }, [finishedInitialMeasurement])
 
+    // trigger node measuring on data change
+    const [nodeData, setNodeData] = useState(data)
+    useEffect(() => {
+      setFinishedInitialMeasurement(false) // re-trigger initial finish handler when data was replaced
+      setNodeData([...data])
+    }, [data])
+
     return (
       <>
         <ReactNodeRendering
-          nodeData={data}
+          nodeData={nodeData}
           nodeInfos={nodeInfos}
           nodeSize={itemSize}
           onMeasured={() => {
