@@ -5,7 +5,9 @@ import {
   PropsWithChildren,
   SetStateAction,
   useEffect,
-  useMemo
+  useLayoutEffect,
+  useMemo,
+  useState
 } from 'react'
 import {
   FilteredGraphWrapper,
@@ -30,20 +32,20 @@ import {
   checkLicense,
   ContextMenu,
   ContextMenuItemProvider,
+  EdgeStyle as ConnectionStyle,
   LicenseError,
   NodeRenderInfo,
+  Popup,
   ReactComponentHtmlNodeStyle,
   ReactNodeRendering,
-  useGraphSearch,
-  useReactNodeRendering,
-  withGraphComponent,
-  EdgeStyle as ConnectionStyle,
   RenderContextMenuProps,
+  RenderNodeProps as RenderItemProps,
   RenderPopupProps,
   RenderTooltipProps,
   Tooltip,
-  Popup,
-  RenderNodeProps as RenderItemProps
+  useGraphSearch,
+  useReactNodeRendering,
+  withGraphComponent
 } from '@yworks/react-yfiles-core'
 import {
   OrgChartProvider,
@@ -338,8 +340,7 @@ const OrgChartCore = withGraphComponent(
 
     const graphComponent = orgChartGraph.graphComponent
 
-    const { nodeInfos, setNodeInfos, forceUpdateMeasurement, updateMeasurement } =
-      useReactNodeRendering<TOrgChartItem>()
+    const { nodeInfos, setNodeInfos } = useReactNodeRendering<TOrgChartItem>()
 
     const { graphManager } = useMemo(() => {
       const filteredGraph = graphComponent.graph as FilteredGraphWrapper
@@ -406,8 +407,6 @@ const OrgChartCore = withGraphComponent(
 
     useEffect(() => {
       graphManager.updateGraph(data, renderItem, connectionStyles)
-      // force a new measurement if the graph has been updated
-      updateMeasurement()
     }, [data, itemSize?.width, itemSize?.height, connectionStyles, renderItem])
 
     useEffect(() => {
@@ -418,16 +417,21 @@ const OrgChartCore = withGraphComponent(
     // provide search hits on the context
     orgChartGraph.getSearchHits = () => graphSearch.matchingNodes.map(n => n.tag)
 
+    // fit graph after initial measurement
+    const [finishedInitialMeasurement, setFinishedInitialMeasurement] = useState(false)
+    useLayoutEffect(() => {
+      graphComponent.fitGraphBounds()
+    }, [finishedInitialMeasurement])
+
     return (
       <>
         <ReactNodeRendering
           nodeData={data}
           nodeInfos={nodeInfos}
           nodeSize={itemSize}
-          updateMeasurement={forceUpdateMeasurement}
           onMeasured={() => {
             orgChartGraph.applyLayout(incrementalLayout, graphManager.incrementalElements)
-            graphComponent.fitGraphBounds()
+            setFinishedInitialMeasurement(true)
           }}
           onRendered={isInternalOrgchartModel(orgChartGraph) ? orgChartGraph.onRendered : undefined}
         />
