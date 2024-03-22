@@ -424,10 +424,10 @@ const OrgChartCore = withGraphComponent(
     }, [finishedInitialMeasurement])
 
     // trigger node measuring on data change
-    const [nodeData, setNodeData] = useState(data)
+    const [nodeData, setNodeData] = useState<TOrgChartItem[]>([])
     useEffect(() => {
       setFinishedInitialMeasurement(false) // re-trigger initial finish handler when data was replaced
-      setNodeData([...data])
+      setNodeData(data)
     }, [data])
 
     return (
