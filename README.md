@@ -69,7 +69,7 @@ Find the full documentation, API and many code examples in our [documentation](h
 
 [![Live Playground](https://raw.githubusercontent.com/yWorks/react-yfiles-orgchart/main/assets/playground.png)](https://docs.yworks.com/react-yfiles-orgchart/introduction/welcome)
 
-Try the yFiles React Organization Chart component directly in our browser with our [playground](https://docs.yworks.com/react-yfiles-orgchart/introduction/welcome)
+Try the yFiles React Organization Chart component directly in your browser with our [playground](https://docs.yworks.com/react-yfiles-orgchart/introduction/welcome)
 
 ## Features
 
@@ -89,7 +89,7 @@ The component provides versatile features out of the box that can be further tai
     <tr>
         <td>
             <a href="https://docs.yworks.com/react-yfiles-orgchart/features/hook-orgchartprovider"><img src="https://raw.githubusercontent.com/yWorks/react-yfiles-orgchart/main/assets/collapse-expand.png" title="Collapse / Expand" alt="Collapse / Expand"></a><br>
-            <a href="https://docs.yworks.com/react-yfiles-orgchart/features/hook-orgchartprovider">Custom visualization</a>
+            <a href="https://docs.yworks.com/react-yfiles-orgchart/features/hook-orgchartprovider">Interactive Collapse / Expand</a>
         </td>
         <td>
             <a href="https://docs.yworks.com/react-yfiles-orgchart/features/search"><img src="https://raw.githubusercontent.com/yWorks/react-yfiles-orgchart/main/assets/search.png" title="Search" alt="Search"></a><br>
