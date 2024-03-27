@@ -1,4 +1,4 @@
-import { GraphComponent, ICommand, IGraph, INode } from 'yfiles'
+import { GraphComponent, ICommand, IEdge, IGraph, INode } from 'yfiles'
 import { OrgChartConnection, OrgChartItem } from './OrgChart'
 import { CollapsibleTree } from './core/CollapsibleTree'
 import {
@@ -73,6 +73,14 @@ export interface OrgChartModel {
    * items as fixed and arranges only the items contained in the incrementalItems array.
    */
   applyLayout(incremental?: boolean, incrementalItems?: OrgChartItem[]): void
+  /**
+   * Retrieves the items that match the search currently.
+   */
+  getSearchHits: () => OrgChartItem[]
+  /**
+   * Pans the viewport to the center of the given items.
+   */
+  zoomTo(items: (OrgChartItem | OrgChartConnection)[]): void
   /**
    * Pans the viewport to center the given item.
    */
@@ -161,6 +169,31 @@ export function createOrgChartModel(
     onRenderedCallback = null
   }
 
+  function zoomTo(items: (OrgChartItem | OrgChartConnection)[]) {
+    if (items.length === 0) {
+      return
+    }
+    const graph = graphComponent.graph
+    const modelItems: (INode | IEdge)[] = []
+    items.forEach(item => {
+      if ('source' in item && 'target' in item) {
+        const source = getNode(item.source, graph)!
+        const target = getNode(item.target, graph)!
+
+        const edge = graph.getEdge(source, target)
+        if (edge) {
+          // collapsibleTree.zoomToItem(edge)
+          modelItems.push(edge)
+        }
+      } else {
+        const node = getNode(item, graph)!
+        // collapsibleTree.zoomToItem(node)
+        modelItems.push(node)
+      }
+    })
+    collapsibleTree.zoomTo(modelItems)
+  }
+
   return {
     graphComponent,
 
@@ -245,20 +278,10 @@ export function createOrgChartModel(
     },
 
     zoomToItem(item: OrgChartItem | OrgChartConnection) {
-      const graph = graphComponent.graph
-      if ('source' in item && 'target' in item) {
-        const source = getNode(item.source, graph)!
-        const target = getNode(item.target, graph)!
-
-        const edge = graph.getEdge(source, target)
-        if (edge) {
-          collapsibleTree.zoomToItem(edge)
-        }
-      } else {
-        const node = getNode(item, graph)!
-        collapsibleTree.zoomToItem(node)
-      }
+      zoomTo([item])
     },
+
+    zoomTo,
 
     zoomIn() {
       ICommand.INCREASE_ZOOM.execute(null, graphComponent)
@@ -319,7 +342,7 @@ export function createOrgChartModel(
     refresh() {
       graphComponent.invalidate()
     },
-
+    getSearchHits: () => [], // will be replaced during initialization
     onRendered
   }
 }

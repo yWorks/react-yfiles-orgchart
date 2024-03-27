@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { KeyboardEvent, useCallback, useMemo, useState } from 'react'
 import {
   Controls,
   CustomOrgChartItem,
@@ -17,7 +17,8 @@ import TooltipTemplate from './TooltipTemplate.tsx'
 let id = 100
 
 function OrgChartWithExternalControls() {
-  const { showAll, zoomToItem, fitContent, getVisibleItems } = useOrgChartContext()!
+  const { showAll, zoomToItem, fitContent, getVisibleItems, zoomTo, getSearchHits } =
+    useOrgChartContext()!
 
   const onFocus = useCallback((item: CustomOrgChartItem | null) => {
     setFocusedItem(item)
@@ -37,6 +38,12 @@ function OrgChartWithExternalControls() {
   const [hoveredItem, setHoveredItem] = useState<CustomOrgChartItem | null>(null)
   function search(data: CustomOrgChartItem, searchQuery: string): boolean {
     return !!data.email && data.email.toLowerCase().indexOf(searchQuery.toLowerCase()) !== -1
+  }
+
+  function onSearchEnter(event: KeyboardEvent) {
+    if (event.key === 'Enter') {
+      zoomTo(getSearchHits())
+    }
   }
 
   const addRandomNode = () => {
@@ -195,6 +202,7 @@ function OrgChartWithExternalControls() {
             onChange={i => {
               setSearchQuery(i.target.value)
             }}
+            onKeyDown={onSearchEnter}
           />
         </p>
       </div>

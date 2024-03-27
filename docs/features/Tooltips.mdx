@@ -4,19 +4,20 @@ section: 3
 tags: []
 showRightSideBar: false
 ---
-import Playground from '../../components/Playground.astro'
+import Playground from '../../components/Playground-OrgChart.astro'
+import TypeLink from '../../components/TypeLink.astro'
 
 # Tooltips
 
-Tooltips display specific information when hovering over an item. Configure the tooltip by setting a custom React component in the `renderTooltip` prop.
+Tooltips display specific information when hovering over an item. Configure the tooltip by setting a custom React component in the <TypeLink type="OrgChart" member="renderTooltip"/> prop.
 The organization chart component provides a default tooltip that displays the name of a person:
 
 ```tsx
 function OrganizationChart () {
   return (
-    <OrgChart 
-      data={data} 
-      renderTooltip={OrgChartTooltipTemplate}>
+    <OrgChart
+      data={data}
+      renderTooltip={RenderOrgChartTooltip}>
     </OrgChart>
   )
 }
@@ -26,11 +27,11 @@ You can also specify custom React components to render the tooltips according to
 
 <Playground
   code={`
-  
+
     function MyTooltipComponent({ data: { name } }: RenderTooltipProps<CustomOrgChartItem>) {
       return <div style={{ backgroundColor: "tomato", padding: 5, borderRadius: 10, color: "white" }}>{name}</div>
     }
-    
+
     function App () {
       return (
         <OrgChart
@@ -48,6 +49,7 @@ You can also specify custom React components to render the tooltips according to
        "name": "Eric Joplin",
        "email": "ejoplin@yoyodyne.com",
        "status": "present",
+       "icon": "../assets/usericon_male1.svg",
        "subordinates": [2, 3, 15]
      },
      {
@@ -55,14 +57,16 @@ You can also specify custom React components to render the tooltips according to
        "position": "Senior Executive Assistant",
        "name": "Alexander Burns",
        "email": "aburns@yoyodyne.com",
-       "status": "busy"
+       "status": "busy",
+       "icon": "../assets/usericon_male3.svg",
      },
      {
        "id": 3,
        "position": "Junior Executive Assistant",
        "name": "Linda Newland",
        "email": "lnewland@yoyodyne.com",
-       "status": "travel"
+       "status": "travel",
+       "icon": "../assets/usericon_female1.svg",
      }
    ]
   `}

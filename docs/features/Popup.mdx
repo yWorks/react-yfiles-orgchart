@@ -4,13 +4,14 @@ section: 5
 tags: []
 showRightSideBar: false
 ---
-import Playground from '../../components/Playground.astro'
+import Playground from '../../components/Playground-OrgChart.astro'
+import TypeLink from '../../components/TypeLink.astro'
 
 # Popup
 
 The popup provides a custom overlay that displays contextual information for organization chart data.
-The position of the popup relative to the clicked item can be configured with the `popupPosition` prop.
-To adjust the popup visualization, add a custom React component using the `renderPopup` prop.
+The position of the popup relative to the clicked item can be configured with the <TypeLink type="OrgChart" member="popupPosition"/> prop.
+To adjust the popup visualization, add a custom React component using the <TypeLink type="OrgChart" member="renderPopup"/> prop.
 
 <Playground
     code={`
@@ -36,6 +37,7 @@ To adjust the popup visualization, add a custom React component using the `rende
        "name": "Eric Joplin",
        "email": "ejoplin@yoyodyne.com",
        "status": "present",
+       "icon": "../assets/usericon_male1.svg",
        "subordinates": [2, 3, 15]
      },
      {
@@ -43,14 +45,16 @@ To adjust the popup visualization, add a custom React component using the `rende
        "position": "Senior Executive Assistant",
        "name": "Alexander Burns",
        "email": "aburns@yoyodyne.com",
-       "status": "busy"
+       "status": "busy",
+       "icon": "../assets/usericon_male3.svg",
      },
      {
        "id": 3,
        "position": "Junior Executive Assistant",
        "name": "Linda Newland",
        "email": "lnewland@yoyodyne.com",
-       "status": "travel"
+       "status": "travel",
+       "icon": "../assets/usericon_female1.svg",
      }
    ]
   `}

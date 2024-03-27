@@ -5,7 +5,9 @@ import {
   PropsWithChildren,
   SetStateAction,
   useEffect,
-  useMemo
+  useLayoutEffect,
+  useMemo,
+  useState
 } from 'react'
 import {
   FilteredGraphWrapper,
@@ -30,20 +32,20 @@ import {
   checkLicense,
   ContextMenu,
   ContextMenuItemProvider,
+  EdgeStyle as ConnectionStyle,
   LicenseError,
   NodeRenderInfo,
+  Popup,
   ReactComponentHtmlNodeStyle,
   ReactNodeRendering,
-  useGraphSearch,
-  useReactNodeRendering,
-  withGraphComponent,
-  EdgeStyle as ConnectionStyle,
   RenderContextMenuProps,
+  RenderNodeProps as RenderItemProps,
   RenderPopupProps,
   RenderTooltipProps,
   Tooltip,
-  Popup,
-  RenderNodeProps as RenderItemProps
+  useGraphSearch,
+  useReactNodeRendering,
+  withGraphComponent
 } from '@yworks/react-yfiles-core'
 import {
   OrgChartProvider,
@@ -122,7 +124,7 @@ export type CustomOrgChartItem<
 export type CustomOrgChartData<TCustomProps> = CustomOrgChartItem<TCustomProps>[]
 
 /**
- * The basic data type for the connections between date items visualized by the {@link OrgChart} component.
+ * The basic data type for the connections between data items visualized by the {@link OrgChart} component.
  */
 export interface OrgChartConnection {
   source: OrgChartItem
@@ -264,10 +266,12 @@ export interface OrgChartProps<TOrgChartItem extends OrgChartItem, TNeedle> {
   incrementalLayout?: boolean
 }
 
-function checkStylesLoaded() {
+function checkStylesLoaded(root: HTMLElement | null) {
   const dummy = document.createElement('div')
   dummy.id = 'yfiles-react-stylesheet-detection'
-  document.body.appendChild(dummy)
+  const rootNode = root?.getRootNode() ?? document
+  const parent = rootNode === document ? document.body : rootNode
+  parent.appendChild(dummy)
   const computedStyle = getComputedStyle(dummy)
   const hasStyle = computedStyle.fontSize === '1px'
 
@@ -298,10 +302,6 @@ export function OrgChart<TOrgChartItem extends OrgChartItem = CustomOrgChartItem
   if (!checkLicense()) {
     return <LicenseError />
   }
-
-  useEffect(() => {
-    checkStylesLoaded()
-  }, [])
 
   const isWrapped = useOrgChartContextInternal()
   if (isWrapped) {
@@ -340,8 +340,7 @@ const OrgChartCore = withGraphComponent(
 
     const graphComponent = orgChartGraph.graphComponent
 
-    const { nodeInfos, setNodeInfos, forceUpdateMeasurement, updateMeasurement } =
-      useReactNodeRendering<TOrgChartItem>()
+    const { nodeInfos, setNodeInfos } = useReactNodeRendering<TOrgChartItem>()
 
     const { graphManager } = useMemo(() => {
       const filteredGraph = graphComponent.graph as FilteredGraphWrapper
@@ -358,6 +357,10 @@ const OrgChartCore = withGraphComponent(
       return {
         graphManager
       }
+    }, [])
+
+    useEffect(() => {
+      checkStylesLoaded(graphComponent.div)
     }, [])
 
     useEffect(() => {
@@ -404,26 +407,38 @@ const OrgChartCore = withGraphComponent(
 
     useEffect(() => {
       graphManager.updateGraph(data, renderItem, connectionStyles)
-      // force a new measurement if the graph has been updated
-      updateMeasurement()
     }, [data, itemSize?.width, itemSize?.height, connectionStyles, renderItem])
 
     useEffect(() => {
       setPortStylesToFirstOutgoingPorts(graphComponent.graph, interactive)
     }, [interactive, data])
 
-    useGraphSearch(graphComponent, searchNeedle, onSearch)
+    const graphSearch = useGraphSearch(graphComponent, searchNeedle, onSearch)
+    // provide search hits on the context
+    orgChartGraph.getSearchHits = () => graphSearch.matchingNodes.map(n => n.tag)
+
+    // fit graph after initial measurement
+    const [finishedInitialMeasurement, setFinishedInitialMeasurement] = useState(false)
+    useLayoutEffect(() => {
+      graphComponent.fitGraphBounds()
+    }, [finishedInitialMeasurement])
+
+    // trigger node measuring on data change
+    const [nodeData, setNodeData] = useState<TOrgChartItem[]>([])
+    useEffect(() => {
+      setFinishedInitialMeasurement(false) // re-trigger initial finish handler when data was replaced
+      setNodeData(data)
+    }, [data])
 
     return (
       <>
         <ReactNodeRendering
-          nodeData={data}
+          nodeData={nodeData}
           nodeInfos={nodeInfos}
           nodeSize={itemSize}
-          updateMeasurement={forceUpdateMeasurement}
           onMeasured={() => {
             orgChartGraph.applyLayout(incrementalLayout, graphManager.incrementalElements)
-            graphComponent.fitGraphBounds()
+            setFinishedInitialMeasurement(true)
           }}
           onRendered={isInternalOrgchartModel(orgChartGraph) ? orgChartGraph.onRendered : undefined}
         />

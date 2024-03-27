@@ -4,13 +4,14 @@ section: 9
 tags: []
 showRightSideBar: false
 ---
-import Playground from '../../components/Playground.astro'
+import Playground from '../../components/Playground-OrgChart.astro'
+import TypeLink from '../../components/TypeLink.astro'
 
 # Hook & OrgChartProvider
 
-Through the `useOrgChartContext()` hook, users gain access to the organization chart model, allowing them to utilize its functions for further customization of the interaction with the organization chart.
+Through the <TypeLink type="useOrgChartContext" /> hook, users gain access to the organization chart model, allowing them to utilize its functions for further customization of the interaction with the organization chart.
 
-This hook is accessible only when used in a child component of an `OrgChartProvider`. This condition is consistently met when implementing child components for the `OrgChart` component. However, if the hook is called outside the organization chart component, the `OrgChartProvider` must be a common ancestor.
+This hook is accessible only when used in a child component of an <TypeLink type="OrgChartProvider" />. This condition is consistently met when implementing child components for the <TypeLink type="OrgChartItem" /> component. However, if the hook is called outside the organization chart component, the <TypeLink type="OrgChartProvider" /> must be a common ancestor.
 
 The following example demonstrates how to use the hook for a button in a sidebar or a customized context menu.
 

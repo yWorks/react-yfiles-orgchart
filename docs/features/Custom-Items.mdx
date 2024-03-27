@@ -4,35 +4,43 @@ section: 1
 tags: []
 showRightSideBar: false
 ---
-import Playground from '../../components/Playground.astro'
+import Playground from '../../components/Playground-OrgChart.astro'
+import TypeLink from '../../components/TypeLink.astro'
 
 # Custom Items
 
-This component comes with styling and options suitable for general organizational charts. The items in the `data` array must satisfy the `OrgChartItem` type.
+This component comes with styling and options suitable for general organizational charts. The items in the
+<TypeLink type="OrgChart" member="data"/> array must satisfy the <TypeLink type="OrgChartItem" /> type.
 
 ```ts
-type OrgChartItem = {
-  id: any
-  subordinates?: any[]
-  assistant?: boolean
-  width?: number
-  height?: number
+type OrgChartItemId = string | number;
+
+interface OrgChartItem {
+    id: OrgChartItemId;
+    subordinates?: OrgChartItemId[];
+    assistant?: boolean;
+    width?: number;
+    height?: number;
+    className?: string;
+    style?: CSSProperties;
 }
 ```
 <ul className="list-disc ml-4">
-  <li>The optional `subordinates` define the parent-child relationships and should only contain ids of other data items.</li>
-  <li>If `assistant` is `true`, an item is an assistant to their superior and is placed on a separate layer between their superior and the non-assistant subordinates.</li>
-  <li>The optional `width` and `height` define the render size of the item. If no values are given, the size is determined automatically.</li>
+  <li>The optional <TypeLink type="OrgChartItem" member="subordinates"/> define the parent-child relationships and should only contain ids of other data items.</li>
+  <li>If <TypeLink type="OrgChartItem" member="assistant"/> is `true`, an item is an assistant to their superior and is placed on a separate layer between their superior and the non-assistant subordinates.</li>
+  <li>The optional <TypeLink type="OrgChartItem" member="width"/> and <TypeLink type="OrgChartItem" member="height"/> define the render size of the item. If no values are given, the size is determined automatically.</li>
 </ul>
 
 The default visualization expects data items of type `CustomOrgChartItem<Employee>` where `Employee` is defined like this:
 ```ts
 type Employee = {
   name?: string
-  status?: string
+  status?: 'present' | 'busy' | 'travel' | 'unavailable'
   position?: string
   email?: string
   phone?: string
+  fax?: string
+  businessUnit?: string
   icon?: string
 }
 ```
@@ -78,6 +86,7 @@ Note that, to optimize performance and depending on the implementation, it might
        "name": "Eric Joplin",
        "email": "ejoplin@yoyodyne.com",
        "status": "present",
+       "icon": "../assets/usericon_male1.svg",
        "subordinates": [2, 3, 15]
      },
      {
@@ -85,14 +94,16 @@ Note that, to optimize performance and depending on the implementation, it might
        "position": "Senior Executive Assistant",
        "name": "Alexander Burns",
        "email": "aburns@yoyodyne.com",
-       "status": "busy"
+       "status": "busy",
+       "icon": "../assets/usericon_male3.svg",
      },
      {
        "id": 3,
        "position": "Junior Executive Assistant",
        "name": "Linda Newland",
        "email": "lnewland@yoyodyne.com",
-       "status": "travel"
+       "status": "travel",
+       "icon": "../assets/usericon_female1.svg",
      }
    ]
   `}

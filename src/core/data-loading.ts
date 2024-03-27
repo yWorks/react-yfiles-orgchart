@@ -1,4 +1,11 @@
-import { AdjacencyGraphBuilder, AdjacencyNodesSource, Cycle, EdgeCreator, type IGraph, type INode } from 'yfiles'
+import {
+  AdjacencyGraphBuilder,
+  AdjacencyNodesSource,
+  Cycle,
+  EdgeCreator,
+  type IGraph,
+  type INode
+} from 'yfiles'
 import type { OrgChartItem, OrgChartItemId } from '../OrgChart'
 import {
   convertToPolylineEdgeStyle,
@@ -18,7 +25,10 @@ type OrgChartEdge<TOrgChartItem extends OrgChartItem> = {
 export class GraphManager<TOrgChartItem extends OrgChartItem> {
   public data: TOrgChartItem[] = []
   public renderItem?: ComponentType<RenderItemProps<TOrgChartItem>> | undefined
-  public connectionStyles?: (source: TOrgChartItem, target: TOrgChartItem) => ConnectionStyle | undefined
+  public connectionStyles?: (
+    source: TOrgChartItem,
+    target: TOrgChartItem
+  ) => ConnectionStyle | undefined
   public incrementalElements: TOrgChartItem[] = []
   constructor(
     public graphBuilder?: AdjacencyGraphBuilder,
@@ -119,7 +129,6 @@ export function initializeGraphManager<TOrgChartItem extends OrgChartItem>(
   })
 
   edgeCreator.addEdgeUpdatedListener((_, evt) => {
-    edgeCreator.updateBends(evt.graph, evt.item, evt.dataItem)
     edgeCreator.updateStyle(evt.graph, evt.item, evt.dataItem)
     edgeCreator.updateTag(evt.graph, evt.item, evt.dataItem)
     edgeCreator.updateLabels(evt.graph, evt.item, evt.dataItem)
@@ -139,12 +148,11 @@ export function getOrgChartItem<TOrgChartItem extends OrgChartItem>(node: INode)
 
 function compareData<T>(oldData: T[], newData: T[]): T[] {
   const unequalElements: T[] = []
-  newData.forEach((obj2) => {
-    const matchingObject = oldData.find((obj1) => JSON.stringify(obj1) === JSON.stringify(obj2))
+  newData.forEach(obj2 => {
+    const matchingObject = oldData.find(obj1 => JSON.stringify(obj1) === JSON.stringify(obj2))
     if (!matchingObject) {
       unequalElements.push(obj2)
     }
   })
   return unequalElements
 }
-

@@ -4,7 +4,8 @@ section: 10
 tags: []
 showRightSideBar: false
 ---
-import Playground from '../../components/Playground.astro'
+import Playground from '../../components/Playground-OrgChart.astro'
+import TypeLink from '../../components/TypeLink.astro'
 
 # Export Capabilities
 
@@ -12,7 +13,7 @@ The component allows users to export either the entire diagram or a specific par
 Furthermore, it incorporates a print function that leverages the browser's capabilities, enabling users to generate
 hard copies or save the diagram as PDF for offline access.
 
-Access to the corresponding export functions is provided through the `useOrgChartContext()` hook described above.
+Access to the corresponding export functions is provided through the <TypeLink type="useOrgChartContext" /> hook described above.
 
 <Playground
     code={`
@@ -47,6 +48,7 @@ function OrgChartWrapper() {
        "name": "Eric Joplin",
        "email": "ejoplin@yoyodyne.com",
        "status": "present",
+       "icon": "../assets/usericon_male1.svg",
        "subordinates": [2, 3, 15]
      },
      {
@@ -54,14 +56,16 @@ function OrgChartWrapper() {
        "position": "Senior Executive Assistant",
        "name": "Alexander Burns",
        "email": "aburns@yoyodyne.com",
-       "status": "busy"
+       "status": "busy",
+       "icon": "../assets/usericon_male3.svg",
      },
      {
        "id": 3,
        "position": "Junior Executive Assistant",
        "name": "Linda Newland",
        "email": "lnewland@yoyodyne.com",
-       "status": "travel"
+       "status": "travel",
+       "icon": "../assets/usericon_female1.svg",
      }
    ]
   `}

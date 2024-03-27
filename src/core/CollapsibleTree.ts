@@ -24,7 +24,6 @@ import {
   type IMapper,
   type IModelItem,
   INode,
-  Insets,
   type IPort,
   type ItemMapping,
   type ItemMappingConvertible,
@@ -34,6 +33,7 @@ import {
   type LayoutGraph,
   LayoutMode,
   Mapper,
+  MutableRectangle,
   PlaceNodesAtBarycenterStage,
   PlaceNodesAtBarycenterStageData,
   Rect,
@@ -367,7 +367,7 @@ export class CollapsibleTree {
       : this.createConfiguredNonTreeLayoutData(new Set(incrementalNodes))
 
     this.filteredGraph.applyLayout(layout, layoutData)
-    this._graphComponent.fitGraphBounds(new Insets(100))
+    this._graphComponent.fitGraphBounds()
     this.limitViewport()
   }
 
@@ -397,6 +397,30 @@ export class CollapsibleTree {
       ICommand.ZOOM_TO_CURRENT_ITEM.execute(null, this._graphComponent)
       this._graphComponent.focus()
     }
+  }
+
+  /**
+   * Zooms to the union-bounds of the given items.
+   *
+   * If the item is currently not visible, it will be unhidden together with its descendants.
+   */
+  zoomTo(items: IModelItem[]): void {
+    const targetBounds = new MutableRectangle()
+    items.forEach(item => {
+      if (item instanceof IEdge) {
+        const source = item.sourceNode!
+        const target = item.targetNode!
+        this.unhideNode(source)
+        this.unhideNode(target)
+        targetBounds.add(source.layout)
+        targetBounds.add(target.layout)
+      } else if (item instanceof INode) {
+        this.unhideNode(item)
+        targetBounds.add(item.layout)
+      }
+    })
+    this._graphComponent.focus()
+    this._graphComponent.zoomToAnimated(targetBounds.toRect().getEnlarged(200))
   }
 
   private unhideNode(item: INode) {
@@ -469,10 +493,11 @@ export class CollapsibleTree {
     }
 
     layoutData.items.add(
-      isTree ? this.createConfiguredLayoutData(this.filteredGraph)
-          // for hierarchic layout, mark all descendants as incremental during expand,
+      isTree
+        ? this.createConfiguredLayoutData(this.filteredGraph)
+        : // for hierarchic layout, mark all descendants as incremental during expand,
           // when collapsing no incremental nodes are needed
-        : this.createConfiguredNonTreeLayoutData(collapse ? undefined : incrementalNodes)
+          this.createConfiguredNonTreeLayoutData(collapse ? undefined : incrementalNodes)
     )
 
     // configure a LayoutExecutor
@@ -512,11 +537,10 @@ export class CollapsibleTree {
   /**
    * Creates a {@link TreeLayoutData} for the tree layout
    */
-  private createConfiguredLayoutData(
-    graph: IGraph = null!,
-  ): LayoutData {
+  private createConfiguredLayoutData(graph: IGraph = null!): LayoutData {
     return new TreeLayoutData({
-      assistantNodes: (node: INode): boolean => this.isAssistantNode(node) && graph.inDegree(node) > 0,
+      assistantNodes: (node: INode): boolean =>
+        this.isAssistantNode(node) && graph.inDegree(node) > 0,
       outEdgeComparers: this.outEdgeComparers,
       nodeTypes: this.nodeTypesMapping,
       compactNodePlacerStrategyMementos: this.compactNodePlacerStrategyMementos
@@ -600,7 +624,7 @@ export class CollapsibleTree {
    * Set up a ViewportLimiter that makes sure that the explorable region doesn't exceed the graph size.
    */
   private limitViewport(): void {
-    this._graphComponent.updateContentRect(new Insets(100))
+    this._graphComponent.updateContentRect()
     const limiter = this._graphComponent.viewportLimiter
     limiter.honorBothDimensions = false
     limiter.bounds = this._graphComponent.contentRect

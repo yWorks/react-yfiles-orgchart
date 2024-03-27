@@ -4,14 +4,15 @@ section: 8
 tags: []
 showRightSideBar: false
 ---
-import Playground from '../../components/Playground.astro'
+import Playground from '../../components/Playground-OrgChart.astro'
+import TypeLink from '../../components/TypeLink.astro'
 
 # Built-In Components
 
 There are optional components available to enhance the interaction with the organization chart, which can be added as children of the organization chart component:
 <ul className="list-disc ml-4">
-    <li>**Overview**: Presents a simplified view of the entire graph along with the current viewport.</li>
-    <li>**Controls**: Features a toolbar with buttons to adjust the viewport.</li>
+    <li>**<TypeLink type="Overview" />**: Presents a simplified view of the entire graph along with the current viewport.</li>
+    <li>**<TypeLink type="Controls" />**: Features a toolbar with buttons to adjust the viewport.</li>
 </ul>
 
 The controls component comes with a default implementation for organization charts.
