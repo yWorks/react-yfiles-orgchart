@@ -69,7 +69,7 @@ Find the full documentation, API and many code examples in our [documentation](h
 
 [![Live Playground](https://raw.githubusercontent.com/yWorks/react-yfiles-orgchart/main/assets/playground.png)](https://docs.yworks.com/react-yfiles-orgchart/introduction/welcome)
 
-Try the yFiles React Organization Chart component directly in our browser with our [playground](https://docs.yworks.com/react-yfiles-orgchart/introduction/welcome)
+Try the yFiles React Organization Chart component directly in your browser with our [playground](https://docs.yworks.com/react-yfiles-orgchart/introduction/welcome)
 
 ## Features
 
