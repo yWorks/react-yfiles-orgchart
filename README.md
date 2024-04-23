@@ -1,5 +1,7 @@
 # yFiles React Organization Chart Component
 
+[![NPM version](https://img.shields.io/npm/v/@yworks/react-yfiles-orgchart?style=flat)](https://www.npmjs.org/package/@yworks/react-yfiles-orgchart)
+
 [![yFiles React Organization Chart Component](https://raw.githubusercontent.com/yWorks/react-yfiles-orgchart/main/assets/react-orgchart-component.gif)](https://docs.yworks.com/react-yfiles-orgchart)
 
 Welcome to the *yFiles React Organization Chart* component, a powerful and versatile React component based on the [yFiles](https://www.yworks.com/yfiles-overview) library. 
