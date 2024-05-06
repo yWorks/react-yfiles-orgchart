@@ -103,6 +103,19 @@ The component provides versatile features out of the box that can be further tai
 Find all features in the [documentation](https://docs.yworks.com/react-yfiles-orgchart) and try them directly in the
 browser with our integrated code playground.
 
+## Licensing
+
+All owners of a valid software license for [yFiles for HTML](https://www.yworks.com/products/yfiles-for-html)
+are allowed to use these sources as the basis for their own [yFiles for HTML](https://www.yworks.com/products/yfiles-for-html)
+powered applications.
+
+Use of such programs is governed by the rights and conditions as set out in the
+[yFiles for HTML license agreement](https://www.yworks.com/products/yfiles-for-html/sla).
+
+You can evaluate yFiles for 60 days free of charge on [my.yworks.com](https://my.yworks.com/signup?product=YFILES_HTML_EVAL).
+
+For more information, see the `LICENSE` file.
+
 ## Learn More
 
 Explore the possibilities of visualizing organizational structures with the yFiles Organization Chart Component. For further information about [yFiles for HTML](https://www.yworks.com/yfiles-overview) and our company, please visit [yWorks.com](https://www.yworks.com).
