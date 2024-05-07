@@ -283,6 +283,22 @@ function checkStylesLoaded(root: HTMLElement | null) {
   dummy.remove()
 }
 
+const licenseErrorCodeSample = `import {OrgChart, registerLicense} from '@yworks/react-yfiles-orgchart' 
+import '@yworks/react-yfiles-orgchart/dist/index.css'
+import yFilesLicense from './license.json'
+
+function App() {
+  registerLicense(yFilesLicense)
+            
+  const data = [
+    {id: 0, name: 'Eric Joplin', subordinates: [1, 2]},
+    {id: 1, name: 'Amy Kain'},
+    {id: 2, name: 'David Kerry'}
+  ]
+
+  return <OrgChart data={data}></OrgChart>
+}`
+
 /**
  * The OrgChart component visualizes the given data as an organization chart.
  * All data items have to be included in the [data]{@link OrgChartProps.data}. The relationship between an item
@@ -300,7 +316,12 @@ export function OrgChart<TOrgChartItem extends OrgChartItem = CustomOrgChartItem
   props: OrgChartProps<TOrgChartItem, TNeedle> & PropsWithChildren
 ) {
   if (!checkLicense()) {
-    return <LicenseError />
+    return (
+      <LicenseError
+        componentName={'yFiles React Organization Chart Component'}
+        codeSample={licenseErrorCodeSample}
+      />
+    )
   }
 
   const isWrapped = useOrgChartContextInternal()
