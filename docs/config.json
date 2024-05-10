@@ -1,3 +1,4 @@
 {
-  "mainComponents": ["OrgChart", "OrgChartProvider"]
+  "mainComponents": ["OrgChart", "OrgChartProvider"],
+  "componentPropsDocText": "data={data}"
 }
