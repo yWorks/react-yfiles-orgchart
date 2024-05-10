@@ -7,57 +7,105 @@ This component enables seamless integration for displaying organization charts i
 
 ## Getting Started
 
-1. **Installation:**
-   Install the component via npm by running the following command in your project directory:
+### Prerequisites
+
+To use the Organization Chart component, [yFiles for HTML](https://www.yworks.com/products/yfiles-for-html) is required.
+You can evaluate yFiles for 60 days free of charge on [my.yworks.com](https://my.yworks.com/signup?product=YFILES_HTML_EVAL).
+See [Licensing](https://docs.yworks.com/react-yfiles-orgchart/introduction/licensing) for more information on this topic.
+
+You can learn how to work with the yFiles npm module in our [Developer’s Guide](https://docs.yworks.com/yfileshtml/#/dguide/yfiles_npm_module). A convenient way of getting access to yFiles is to use the [yFiles Dev Suite](https://www.npmjs.com/package/yfiles-dev-suite).
+
+### Project Setup
+
+1. **Installation**
+
+   In addition to yFiles, the Organization Chart requires React to be installed in your project.
+   If you want to start your project from scratch, we recommend using vite:
+   ```
+   npm create vite@latest my-orgchart-app -- --template react-ts
+   ```
+
+   Add the yFiles dependency:
+   ```
+   npm install <yFiles package path>/lib-dev/yfiles-26.0.0+dev.tgz
+   ```
+
+   <details>
+
+   <summary>Sample <code>package.json</code> dependencies</summary>
+   The resulting package.json dependencies should resemble the following:
+
+   ```json
+      "dependencies": {
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0",
+        "yfiles": "./lib-dev/yfiles-26.0.0.tgz"
+     }
+   ```
+   </details>
+
+   Now, the component itself can be installed:
    ```bash
    npm install @yworks/react-yfiles-orgchart
    ```
-   
-   The organization chart module has certain peer dependencies that must be installed within your project. Since it is a React module, `react` and `react-dom` dependencies are needed.
-    
-   Additionally, the component relies on the [yFiles](https://www.yworks.com/yfiles-overview) library which is not available on the public npm registry. Instructions on how to work with the yFiles npm module in our [Developer's Guide](https://docs.yworks.com/yfileshtml/#/dguide/yfiles_npm_module).
 
-   Ensure that the dependencies in the `package.json` file resemble the following:
-   ```json
-   {
-     ...
-     "dependencies": {
-       "@yworks/react-yfiles-orgchart": "^1.0.0",
-       "react": "^18.2.0",
-       "react-dom": "^18.2.0",
-       "yfiles": "<yFiles package path>/lib/yfiles-26.0.0.tgz",
-       ...
-     }
-   }
+2. **License**
+
+   Be sure to invoke <TypeLink type="registerLicense" /> before using the Organization Chart React component.
+   When evaluating yFiles, the license JSON file is found in the `lib/` folder of the yFiles for HTML evaluation package.
+   For licensed users, the license data is provided separately.
+
+   <details>
+
+   <summary>License registration</summary>
+
+   Import or paste your license data and register the license, e.g. in `App.tsx`:
+
+   ```js
+   import yFilesLicense from './license.json'
+
+   registerLicense(yFilesLicense)
+   ```
+   </details>
+
+3. **Stylesheet**
+
+   Make sure to import the CSS stylesheet as well:
+
+   ```js
+   import '@yworks/react-yfiles-orgchart/dist/index.css'
    ```
 
-2. **License:**
-    Before using the component, a valid [yFiles for HTML](https://www.yworks.com/products/yfiles-for-html) version is required. You can evaluate yFiles for 60 days free of charge on [my.yworks.com](https://my.yworks.com/signup?product=YFILES_HTML_EVAL).
-    Be sure to invoke the `registerLicense` function to furnish the license file before utilizing the organization chart component.
-    
-3. **Usage:**
-    Utilize the component in your application.
-    Make sure to import the CSS stylesheet 'index.css' as the component requires it for correct functionality.
+4. **Usage**
 
-    ```tsx
-    import { CustomOrgChartData, OrgChart, registerLicense } from '@yworks/react-yfiles-orgchart'
-    import '@yworks/react-yfiles-orgchart/dist/index.css' 
-    import yFilesLicense from './license.json'
+   You are now all set to utilize the Organization Chart component with your data!
+   See a basic example `App.tsx` below:
+
+   ```tsx
+   import { 
+     CustomOrgChartData, 
+     OrgChart, 
+     registerLicense 
+   } from '@yworks/react-yfiles-orgchart'
    
-    function App() {
-      registerLicense(yFilesLicense)
-      
-      const data = [
-        { id: 0, name: 'Eric Joplin', subordinates: [1, 2] },
-        { id: 1, name: 'Amy Kain' },
-        { id: 2, name: 'David Kerry' }
-      ] satisfies CustomOrgChartData<{name: string}>
-     
-      return <OrgChart data={data}></OrgChart>
-    }
-    
-    export default App
-    ```
+   import '@yworks/react-yfiles-orgchart/dist/index.css'
+   
+   import yFilesLicense from './license.json'
+   
+   registerLicense(yFilesLicense)
+   
+   const data = [
+     { id: 0, name: 'Eric Joplin', subordinates: [1, 2] },
+     { id: 1, name: 'Amy Kain' },
+     { id: 2, name: 'David Kerry' }
+   ] satisfies CustomOrgChartData<{name: string}>
+   
+   function App() {
+     return <OrgChart data={data}></OrgChart>
+   }
+   
+   export default App
+   ```
 
     > **Note:** By default, the `OrgChart` component adjusts its size to match the size of its parent element. Therefore, it is necessary to set the dimensions of the containing element or apply styling directly to the `OrgChart` component. This can be achieved by defining a CSS class or applying inline styles.
 
