@@ -30,6 +30,7 @@ import {
 import './styles/orgchart-style.css'
 import {
   checkLicense,
+  checkStylesheetLoaded,
   ContextMenu,
   ContextMenuItemProvider,
   EdgeStyle as ConnectionStyle,
@@ -266,23 +267,6 @@ export interface OrgChartProps<TOrgChartItem extends OrgChartItem, TNeedle> {
   incrementalLayout?: boolean
 }
 
-function checkStylesLoaded(root: HTMLElement | null) {
-  const dummy = document.createElement('div')
-  dummy.id = 'yfiles-react-stylesheet-detection'
-  const rootNode = root?.getRootNode() ?? document
-  const parent = rootNode === document ? document.body : rootNode
-  parent.appendChild(dummy)
-  const computedStyle = getComputedStyle(dummy)
-  const hasStyle = computedStyle.fontSize === '1px'
-
-  if (!hasStyle) {
-    console.warn(
-      "Stylesheet not loaded! Please import 'dist/index.css' from the @yworks/react-yfiles-orgchart package."
-    )
-  }
-  dummy.remove()
-}
-
 const licenseErrorCodeSample = `import {OrgChart, registerLicense} from '@yworks/react-yfiles-orgchart' 
 import '@yworks/react-yfiles-orgchart/dist/index.css'
 import yFilesLicense from './license.json'
@@ -381,7 +365,7 @@ const OrgChartCore = withGraphComponent(
     }, [])
 
     useEffect(() => {
-      checkStylesLoaded(graphComponent.div)
+      checkStylesheetLoaded(graphComponent.div, 'react-yfiles-orgchart')
     }, [])
 
     useEffect(() => {

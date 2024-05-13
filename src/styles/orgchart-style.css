@@ -1,8 +1,8 @@
 @import '@yworks/react-yfiles-core/dist/index.css';
 
 /* this rule is needed to detect if the stylesheet is loaded */
-#yfiles-react-stylesheet-detection {
-    font-size: 1px !important;
+#react-yfiles-orgchart-stylesheet-detection {
+    --yfiles-react-stylesheet-detection: react-yfiles-orgchart-stylesheet-detection;
     display: none;
 }
 
