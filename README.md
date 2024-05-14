@@ -1,5 +1,7 @@
 # yFiles React Organization Chart Component
 
+[![NPM version](https://img.shields.io/npm/v/@yworks/react-yfiles-orgchart?style=flat)](https://www.npmjs.org/package/@yworks/react-yfiles-orgchart)
+
 [![yFiles React Organization Chart Component](https://raw.githubusercontent.com/yWorks/react-yfiles-orgchart/main/assets/react-orgchart-component.gif)](https://docs.yworks.com/react-yfiles-orgchart)
 
 Welcome to the *yFiles React Organization Chart* component, a powerful and versatile React component based on the [yFiles](https://www.yworks.com/yfiles-overview) library. 
@@ -148,6 +150,19 @@ The component provides versatile features out of the box that can be further tai
 
 Find all features in the [documentation](https://docs.yworks.com/react-yfiles-orgchart) and try them directly in the
 browser with our integrated code playground.
+
+## Licensing
+
+All owners of a valid software license for [yFiles for HTML](https://www.yworks.com/products/yfiles-for-html)
+are allowed to use these sources as the basis for their own [yFiles for HTML](https://www.yworks.com/products/yfiles-for-html)
+powered applications.
+
+Use of such programs is governed by the rights and conditions as set out in the
+[yFiles for HTML license agreement](https://www.yworks.com/products/yfiles-for-html/sla).
+
+You can evaluate yFiles for 60 days free of charge on [my.yworks.com](https://my.yworks.com/signup?product=YFILES_HTML_EVAL).
+
+For more information, see the `LICENSE` file.
 
 ## Learn More
 
