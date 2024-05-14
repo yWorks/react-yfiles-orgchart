@@ -44,7 +44,7 @@
     "typescript": "^5.3.2"
   },
   "dependencies": {
-    "@yworks/react-yfiles-core": "^2.0.0-beta.1"
+    "@yworks/react-yfiles-core": "^2.0.0"
   },
   "files": [
     "LICENSE",
