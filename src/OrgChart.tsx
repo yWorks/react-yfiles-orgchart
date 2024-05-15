@@ -127,9 +127,9 @@ export type CustomOrgChartData<TCustomProps> = CustomOrgChartItem<TCustomProps>[
 /**
  * The basic data type for the connections between data items visualized by the {@link OrgChart} component.
  */
-export interface OrgChartConnection {
-  source: OrgChartItem
-  target: OrgChartItem
+export interface OrgChartConnection<TOrgChartItem extends OrgChartItem> {
+  source: TOrgChartItem
+  target: TOrgChartItem
 }
 
 /**
@@ -235,7 +235,9 @@ export interface OrgChartProps<TOrgChartItem extends OrgChartItem, TNeedle> {
   /**
    * An optional component that can be used for rendering a custom tooltip.
    */
-  renderTooltip?: ComponentType<RenderTooltipProps<TOrgChartItem>>
+  renderTooltip?: ComponentType<
+    RenderTooltipProps<TOrgChartItem | OrgChartConnection<TOrgChartItem>>
+  >
   /**
    * An optional function specifying the context menu items for a data item.
    */

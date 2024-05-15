@@ -194,7 +194,7 @@ function findProperties(data: CustomOrgChartItem) {
  */
 export function RenderOrgChartTooltip<TOrgChartItem extends OrgChartItem>({
   data
-}: RenderTooltipProps<TOrgChartItem>) {
+}: RenderTooltipProps<TOrgChartItem | OrgChartConnection<TOrgChartItem>>) {
   // Currently, no tooltips are shown for edges.
   if ('source' in data && 'target' in data) {
     return null
@@ -288,7 +288,7 @@ export function OrgChartControlButtons(): ControlButton[] {
  * @returns an array of [context menu items]{@link ContextMenuProps.menuItems}.
  */
 export function OrgChartContextMenuItems(
-  item: OrgChartItem | OrgChartConnection | null
+  item: OrgChartItem | OrgChartConnection<OrgChartItem> | null
 ): ContextMenuItem<OrgChartItem>[] {
   const orgChart = useOrgChartContext()
 

@@ -3,6 +3,7 @@ import {
   ContextMenuItem,
   CustomOrgChartItem,
   OrgChart,
+  OrgChartConnection,
   OrgChartContextMenuItems,
   RenderItemProps,
   RenderTooltipProps
@@ -26,26 +27,30 @@ import {
   Tooltip
 } from '@mui/material'
 
-function TooltipTemplate({ data }: RenderTooltipProps<CustomOrgChartItem>) {
-  return (
-    <Card sx={{ minWidth: 275 }}>
-      <CardContent>
-        <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-          {data.position}
-        </Typography>
-        <Typography variant="h5" component="div">
-          {data.name}
-        </Typography>
-        <Typography sx={{ mb: 1.5 }} color="text.secondary">
-          {data.status}
-        </Typography>
-        <Typography variant="body2">{data.email}</Typography>
-      </CardContent>
-      <CardActions>
-        <Button size="small">Learn More</Button>
-      </CardActions>
-    </Card>
-  )
+function TooltipTemplate({
+  data
+}: RenderTooltipProps<CustomOrgChartItem | OrgChartConnection<CustomOrgChartItem>>) {
+  if ('name' in data) {
+    return (
+      <Card sx={{ minWidth: 275 }}>
+        <CardContent>
+          <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+            {data.position}
+          </Typography>
+          <Typography variant="h5" component="div">
+            {data.name}
+          </Typography>
+          <Typography sx={{ mb: 1.5 }} color="text.secondary">
+            {data.status}
+          </Typography>
+          <Typography variant="body2">{data.email}</Typography>
+        </CardContent>
+        <CardActions>
+          <Button size="small">Learn More</Button>
+        </CardActions>
+      </Card>
+    )
+  }
 }
 
 function RenderItem(props: RenderItemProps<CustomOrgChartItem>) {

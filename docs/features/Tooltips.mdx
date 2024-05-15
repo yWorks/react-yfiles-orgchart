@@ -28,9 +28,25 @@ You can also specify custom React components to render the tooltips according to
 <Playground
   code={`
 
-    function MyTooltipComponent({ data: { name } }: RenderTooltipProps<CustomOrgChartItem>) {
-      return <div style={{ backgroundColor: "tomato", padding: 5, borderRadius: 10, color: "white" }}>{name}</div>
+    function MyTooltipComponent({
+      data
+    }: RenderTooltipProps<CustomOrgChartItem | OrgChartConnection<CustomOrgChartItem>>) {
+      let text = ''
+      if ('name' in data) {
+        // orgchart item tooltip
+        text = data.name!
+      } else if ('source' in data) {
+        // orgchart connection tooltip
+        text = \`${data.source.name} → ${data.target.name}\`
+      }
+
+      return (
+        <div style={{ backgroundColor: 'tomato', padding: 5, borderRadius: 10, color: 'white' }}>
+          {text}
+        </div>
+      )
     }
+
 
     function App () {
       return (

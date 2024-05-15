@@ -80,11 +80,11 @@ export interface OrgChartModel {
   /**
    * Pans the viewport to the center of the given items.
    */
-  zoomTo(items: (OrgChartItem | OrgChartConnection)[]): void
+  zoomTo(items: (OrgChartItem | OrgChartConnection<OrgChartItem>)[]): void
   /**
    * Pans the viewport to center the given item.
    */
-  zoomToItem(item: OrgChartItem | OrgChartConnection): void
+  zoomToItem(item: OrgChartItem | OrgChartConnection<OrgChartItem>): void
   /**
    * Increases the zoom level.
    */
@@ -169,7 +169,7 @@ export function createOrgChartModel(
     onRenderedCallback = null
   }
 
-  function zoomTo(items: (OrgChartItem | OrgChartConnection)[]) {
+  function zoomTo(items: (OrgChartItem | OrgChartConnection<OrgChartItem>)[]) {
     if (items.length === 0) {
       return
     }
@@ -277,7 +277,7 @@ export function createOrgChartModel(
       return collapsibleTree.applyInitialLayout(incremental ?? false, incrementalNodes)
     },
 
-    zoomToItem(item: OrgChartItem | OrgChartConnection) {
+    zoomToItem(item: OrgChartItem | OrgChartConnection<OrgChartItem>) {
       zoomTo([item])
     },
 
