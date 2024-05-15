@@ -37,7 +37,7 @@ You can also specify custom React components to render the tooltips according to
         text = data.name!
       } else if ('source' in data) {
         // orgchart connection tooltip
-        text = \`${data.source.name} → ${data.target.name}\`
+        text = data.source.name + " → " + data.target.name
       }
 
       return (
