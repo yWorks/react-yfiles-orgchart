@@ -2,6 +2,7 @@ import {
   ContextMenuItem,
   CustomOrgChartItem,
   OrgChart,
+  OrgChartConnection,
   RenderItemProps,
   RenderTooltipProps
 } from '@yworks/react-yfiles-orgchart'
@@ -14,9 +15,23 @@ export function useColorContext() {
   return useContext(ColorContext)
 }
 
-function TooltipTemplate({ data: { name } }: RenderTooltipProps<CustomOrgChartItem>) {
-  const color = useColorContext()
-  return <div style={{ backgroundColor: color }}>{name}</div>
+function MyTooltipComponent({
+  data
+}: RenderTooltipProps<CustomOrgChartItem | OrgChartConnection<CustomOrgChartItem>>) {
+  let text = ''
+  if ('name' in data) {
+    // orgchart item tooltip
+    text = data.name!
+  } else if ('source' in data) {
+    // orgchart connection tooltip
+    text = `${data.source.name} → ${data.target.name}`
+  }
+
+  return (
+    <div style={{ backgroundColor: 'tomato', padding: 5, borderRadius: 10, color: 'white' }}>
+      {text}
+    </div>
+  )
 }
 
 function RenderMenu(_: {
@@ -70,7 +85,7 @@ export default function Islands() {
         <OrgChart
           data={largeOrgchartData}
           renderItem={RenderItem}
-          renderTooltip={TooltipTemplate}
+          renderTooltip={MyTooltipComponent}
           renderContextMenu={RenderMenu}
         ></OrgChart>
       </ColorContext.Provider>

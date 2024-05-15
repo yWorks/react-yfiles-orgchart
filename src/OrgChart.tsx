@@ -30,6 +30,7 @@ import {
 import './styles/orgchart-style.css'
 import {
   checkLicense,
+  checkStylesheetLoaded,
   ContextMenu,
   ContextMenuItemProvider,
   EdgeStyle as ConnectionStyle,
@@ -126,9 +127,9 @@ export type CustomOrgChartData<TCustomProps> = CustomOrgChartItem<TCustomProps>[
 /**
  * The basic data type for the connections between data items visualized by the {@link OrgChart} component.
  */
-export interface OrgChartConnection {
-  source: OrgChartItem
-  target: OrgChartItem
+export interface OrgChartConnection<TOrgChartItem extends OrgChartItem> {
+  source: TOrgChartItem
+  target: TOrgChartItem
 }
 
 /**
@@ -234,7 +235,9 @@ export interface OrgChartProps<TOrgChartItem extends OrgChartItem, TNeedle> {
   /**
    * An optional component that can be used for rendering a custom tooltip.
    */
-  renderTooltip?: ComponentType<RenderTooltipProps<TOrgChartItem>>
+  renderTooltip?: ComponentType<
+    RenderTooltipProps<TOrgChartItem | OrgChartConnection<TOrgChartItem>>
+  >
   /**
    * An optional function specifying the context menu items for a data item.
    */
@@ -266,22 +269,21 @@ export interface OrgChartProps<TOrgChartItem extends OrgChartItem, TNeedle> {
   incrementalLayout?: boolean
 }
 
-function checkStylesLoaded(root: HTMLElement | null) {
-  const dummy = document.createElement('div')
-  dummy.id = 'yfiles-react-stylesheet-detection'
-  const rootNode = root?.getRootNode() ?? document
-  const parent = rootNode === document ? document.body : rootNode
-  parent.appendChild(dummy)
-  const computedStyle = getComputedStyle(dummy)
-  const hasStyle = computedStyle.fontSize === '1px'
+const licenseErrorCodeSample = `import {OrgChart, registerLicense} from '@yworks/react-yfiles-orgchart' 
+import '@yworks/react-yfiles-orgchart/dist/index.css'
+import yFilesLicense from './license.json'
 
-  if (!hasStyle) {
-    console.warn(
-      "Stylesheet not loaded! Please import 'dist/index.css' from the @yworks/react-yfiles-orgchart package."
-    )
-  }
-  dummy.remove()
-}
+function App() {
+  registerLicense(yFilesLicense)
+            
+  const data = [
+    {id: 0, name: 'Eric Joplin', subordinates: [1, 2]},
+    {id: 1, name: 'Amy Kain'},
+    {id: 2, name: 'David Kerry'}
+  ]
+
+  return <OrgChart data={data}></OrgChart>
+}`
 
 /**
  * The OrgChart component visualizes the given data as an organization chart.
@@ -300,7 +302,12 @@ export function OrgChart<TOrgChartItem extends OrgChartItem = CustomOrgChartItem
   props: OrgChartProps<TOrgChartItem, TNeedle> & PropsWithChildren
 ) {
   if (!checkLicense()) {
-    return <LicenseError />
+    return (
+      <LicenseError
+        componentName={'yFiles React Organization Chart Component'}
+        codeSample={licenseErrorCodeSample}
+      />
+    )
   }
 
   const isWrapped = useOrgChartContextInternal()
@@ -360,7 +367,7 @@ const OrgChartCore = withGraphComponent(
     }, [])
 
     useEffect(() => {
-      checkStylesLoaded(graphComponent.div)
+      checkStylesheetLoaded(graphComponent.div, 'react-yfiles-orgchart')
     }, [])
 
     useEffect(() => {
