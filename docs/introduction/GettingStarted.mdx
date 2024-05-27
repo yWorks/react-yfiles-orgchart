@@ -4,8 +4,11 @@ section: 1
 tags: []
 ---
 import TypeLink from '../../components/TypeLink.astro'
+import Video from '../../components/Video.astro'
+import videoImage from './yt-react-components_organization-chart.png'
 
 # Getting Started
+<Video image={videoImage} url="https://youtu.be/bXjnKJkiApo"/>
 
 ## Prerequisites
 
@@ -19,95 +22,99 @@ You can learn how to work with the yFiles npm module in our [Developer’s Guide
 
 1. **Installation**
 
-   In addition to yFiles, the Organization Chart component requires React to be installed in your project.
-   If you want to start your project from scratch, we recommend using vite:
-   ```
-   npm create vite@latest my-orgchart-app -- --template react-ts
-   ```
+In addition to yFiles, the Organization Chart component requires React to be installed in your project.
+If you want to start your project from scratch, we recommend using vite:
+```
+npm create vite@latest my-orgchart-app -- --template react-ts
+```
 
-   Add the yFiles dependency:
-   ```
-   npm install <yFiles package path>/lib-dev/yfiles-26.0.0+dev.tgz
-   ```
+Add the yFiles dependency:
+```
+npm install <yFiles package path>/lib-dev/yfiles-26.0.0+dev.tgz
+  ```
 
-   <details>
+<details>
 
-   <summary>Sample <code>package.json</code> dependencies</summary>
-   The resulting package.json dependencies should resemble the following:
+  <summary>Sample <code>package.json</code> dependencies</summary>
+  The resulting package.json dependencies should resemble the following:
 
-   ```json
-      "dependencies": {
-        "react": "^18.2.0",
-        "react-dom": "^18.2.0",
-        "yfiles": "./lib-dev/yfiles-26.0.0.tgz"
-     }
-   ```
-   </details>
+  ```json
+  "dependencies": {
+  "react": "^18.2.0",
+  "react-dom": "^18.2.0",
+  "yfiles": "./lib-dev/yfiles-26.0.0.tgz"
+}
+  ```
+</details>
 
-   Now, the component itself can be installed:
-   ```bash
-   npm install @yworks/react-yfiles-orgchart
-   ```
+Now, the component itself can be installed:
+  ```bash
+  npm install @yworks/react-yfiles-orgchart
+  ```
 
-2. **License**
+  2. **License**
 
-   Be sure to invoke <TypeLink type="registerLicense" /> before using the Organization Chart React component.
-   When evaluating yFiles, the license JSON file is found in the `lib/` folder of the yFiles for HTML evaluation package.
-   For licensed users, the license data is provided separately.
+Be sure to invoke <TypeLink type="registerLicense" /> before using the Organization Chart React component.
+When evaluating yFiles, the license JSON file is found in the `lib/` folder of the yFiles for HTML evaluation package.
+For licensed users, the license data is provided separately.
 
-   <details>
+<details>
 
-   <summary>License registration</summary>
+  <summary>License registration</summary>
 
-   Import or paste your license data and register the license, e.g. in `App.tsx`:
+  Import or paste your license data and register the license, e.g. in `App.tsx`:
 
-   ```js
-   import yFilesLicense from './license.json'
+  ```js
+  import yFilesLicense from './license.json'
 
-   registerLicense(yFilesLicense)
-   ```
-   </details>
+  registerLicense(yFilesLicense)
+  ```
+</details>
 
-3. **Stylesheet**
+  3. **Stylesheet**
 
-   Make sure to import the CSS stylesheet as well:
+Make sure to import the CSS stylesheet as well:
 
-   ```js
-   import '@yworks/react-yfiles-orgchart/dist/index.css'
-   ```
+  ```js
+  import '@yworks/react-yfiles-orgchart/dist/index.css'
+  ```
 
-4. **Usage**
+  4. **Usage**
 
-   You are now all set to utilize the Organization Chart component with your data!
-   See a basic example `App.tsx` below:
+You are now all set to utilize the Organization Chart component with your data!
+See a basic example `App.tsx` below:
 
-   ```tsx
-   import {
-     CustomOrgChartData,
-     OrgChart,
-     registerLicense
-   } from '@yworks/react-yfiles-orgchart'
+  ```tsx
+  import {
+    CustomOrgChartData,
+    OrgChart,
+    registerLicense
+  } from '@yworks/react-yfiles-orgchart'
 
-   import '@yworks/react-yfiles-orgchart/dist/index.css'
+  import '@yworks/react-yfiles-orgchart/dist/index.css'
 
-   import yFilesLicense from './license.json'
+  import yFilesLicense from './license.json'
 
-   registerLicense(yFilesLicense)
+  registerLicense(yFilesLicense)
 
-   const data = [
-     { id: 0, name: 'Eric Joplin', subordinates: [1, 2] },
-     { id: 1, name: 'Amy Kain' },
-     { id: 2, name: 'David Kerry' }
-   ] satisfies CustomOrgChartData<{name: string}>
+  const data = [
+  {id: 0, name: 'Eric Joplin', subordinates: [1, 2]},
+  {id: 1, name: 'Amy Kain'},
+  {id: 2, name: 'David Kerry'}
+  ] satisfies CustomOrgChartData
+  <
+  {name: string}>
 
-   function App() {
-     return <OrgChart data={data}></OrgChart>
-   }
+  function App() {
+    return <OrgChart data={data}></OrgChart>
+}
 
-   export default App
-   ```
+export default App
+```
 
-   > **Note:** By default, the <TypeLink type="OrgChart" /> component adjusts its size to match the size of its parent element. Therefore, it is necessary to set the dimensions of the containing element or apply styling directly to the <TypeLink type="OrgChart" /> component. This can be achieved by defining a CSS class or applying inline styles.
+> **Note:** By default, the <TypeLink
+type="OrgChart" /> component adjusts its size to match the size of its parent element. Therefore, it is necessary to set the dimensions of the containing element or apply styling directly to the
+<TypeLink type="OrgChart" /> component. This can be achieved by defining a CSS class or applying inline styles.
 
 ## Learn More
 
