@@ -1,6 +1,6 @@
 import { createContext, PropsWithChildren, useContext, useMemo } from 'react'
 import { CollapsibleTree } from './core/CollapsibleTree'
-import { INode } from 'yfiles'
+import type { GraphComponent, INode } from 'yfiles'
 import { setCollapsedState } from './styles/orgchart-port-style.ts'
 import { useGraphComponent, withGraphComponentProvider } from '@yworks/react-yfiles-core'
 import { createOrgChartModel, OrgChartModel } from './OrgChartModel'
@@ -55,6 +55,8 @@ export function useOrgChartContext(): OrgChartModel {
   return context
 }
 
+const gcToModel = new WeakMap<GraphComponent, OrgChartModel>()
+
 /**
  * The OrgChartProvider component is a [context provider]{@link https://react.dev/learn/passing-data-deeply-with-context},
  * granting external access to the organization chart beyond the {@link OrgChart} component itself.
@@ -102,13 +104,18 @@ export const OrgChartProvider = withGraphComponentProvider(({ children }: PropsW
   }
 
   const orgChart = useMemo(() => {
+    if (gcToModel.has(graphComponent)) {
+      return gcToModel.get(graphComponent)!
+    }
     const collapsibleTree = new CollapsibleTree(graphComponent)
     graphComponent.graph = collapsibleTree.filteredGraph
     collapsibleTree.addCollapsedStateUpdatedListener(setCollapsedState)
     collapsibleTree.isAssistantNode = (node: INode): boolean => node.tag?.assistant ?? false
     // TODO provide customizable out-edge comparer
-    return createOrgChartModel(collapsibleTree, graphComponent)
-  }, [])
+    const orgChartModel = createOrgChartModel(collapsibleTree, graphComponent)
+    gcToModel.set(graphComponent, orgChartModel)
+    return orgChartModel
+  }, [graphComponent])
 
   return <OrgChartContext.Provider value={orgChart}>{children}</OrgChartContext.Provider>
 })
