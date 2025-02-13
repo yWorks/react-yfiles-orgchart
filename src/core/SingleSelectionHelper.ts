@@ -4,12 +4,12 @@ import {
   GraphComponent,
   GraphInputMode,
   GraphItemTypes,
-  ICommand,
+  Command,
   IModelItem,
   KeyboardInputModeBinding
-} from 'yfiles'
+} from '@yfiles/yfiles'
 
-type Recognizer = (eventSource: any, evt: EventArgs) => boolean
+type Recognizer = (evt: EventArgs, eventSource: any) => boolean
 
 let commandBindings: KeyboardInputModeBinding[] = []
 
@@ -30,13 +30,13 @@ export function disableSingleSelection(graphComponent: GraphComponent) {
   }
 
   // re-activate commands
-  mode.availableCommands.add(ICommand.TOGGLE_ITEM_SELECTION)
-  mode.availableCommands.add(ICommand.SELECT_ALL)
+  mode.availableCommands.add(Command.TOGGLE_ITEM_SELECTION)
+  mode.availableCommands.add(Command.SELECT_ALL)
 
-  mode.navigationInputMode.availableCommands.add(ICommand.EXTEND_SELECTION_LEFT)
-  mode.navigationInputMode.availableCommands.add(ICommand.EXTEND_SELECTION_UP)
-  mode.navigationInputMode.availableCommands.add(ICommand.EXTEND_SELECTION_DOWN)
-  mode.navigationInputMode.availableCommands.add(ICommand.EXTEND_SELECTION_RIGHT)
+  mode.navigationInputMode.availableCommands.add(Command.EXTEND_SELECTION_LEFT)
+  mode.navigationInputMode.availableCommands.add(Command.EXTEND_SELECTION_UP)
+  mode.navigationInputMode.availableCommands.add(Command.EXTEND_SELECTION_DOWN)
+  mode.navigationInputMode.availableCommands.add(Command.EXTEND_SELECTION_RIGHT)
 
   // remove the previously registered command bindings
   for (const binding of commandBindings) {
@@ -59,26 +59,34 @@ export function enableSingleSelection(graphComponent: GraphComponent) {
   mode.multiSelectionRecognizer = EventRecognizers.NEVER
 
   // deactivate commands that can lead to multi selection
-  mode.availableCommands.remove(ICommand.TOGGLE_ITEM_SELECTION)
-  mode.availableCommands.remove(ICommand.SELECT_ALL)
+  mode.availableCommands.remove(Command.TOGGLE_ITEM_SELECTION)
+  mode.availableCommands.remove(Command.SELECT_ALL)
 
-  mode.navigationInputMode.availableCommands.remove(ICommand.EXTEND_SELECTION_LEFT)
-  mode.navigationInputMode.availableCommands.remove(ICommand.EXTEND_SELECTION_UP)
-  mode.navigationInputMode.availableCommands.remove(ICommand.EXTEND_SELECTION_DOWN)
-  mode.navigationInputMode.availableCommands.remove(ICommand.EXTEND_SELECTION_RIGHT)
+  mode.navigationInputMode.availableCommands.remove(Command.EXTEND_SELECTION_LEFT)
+  mode.navigationInputMode.availableCommands.remove(Command.EXTEND_SELECTION_UP)
+  mode.navigationInputMode.availableCommands.remove(Command.EXTEND_SELECTION_DOWN)
+  mode.navigationInputMode.availableCommands.remove(Command.EXTEND_SELECTION_RIGHT)
 
   // add dummy command bindings that do nothing in order to prevent default behavior
-  commandBindings.push(mode.keyboardInputMode.addCommandBinding(ICommand.EXTEND_SELECTION_LEFT))
-  commandBindings.push(mode.keyboardInputMode.addCommandBinding(ICommand.EXTEND_SELECTION_UP))
-  commandBindings.push(mode.keyboardInputMode.addCommandBinding(ICommand.EXTEND_SELECTION_DOWN))
-  commandBindings.push(mode.keyboardInputMode.addCommandBinding(ICommand.EXTEND_SELECTION_RIGHT))
+  commandBindings.push(
+    mode.keyboardInputMode.addCommandBinding(Command.EXTEND_SELECTION_LEFT, () => {})
+  )
+  commandBindings.push(
+    mode.keyboardInputMode.addCommandBinding(Command.EXTEND_SELECTION_UP, () => {})
+  )
+  commandBindings.push(
+    mode.keyboardInputMode.addCommandBinding(Command.EXTEND_SELECTION_DOWN, () => {})
+  )
+  commandBindings.push(
+    mode.keyboardInputMode.addCommandBinding(Command.EXTEND_SELECTION_RIGHT, () => {})
+  )
 
   // add custom binding for toggle item selection
   commandBindings.push(
     mode.keyboardInputMode.addCommandBinding(
-      ICommand.TOGGLE_ITEM_SELECTION,
-      (command, parameter) => toggleItemSelectionExecuted(graphComponent, parameter),
-      (command, parameter) => toggleItemSelectionCanExecute(graphComponent, parameter)
+      Command.TOGGLE_ITEM_SELECTION,
+      event => toggleItemSelectionExecuted(graphComponent, event),
+      event => toggleItemSelectionCanExecute(graphComponent, event)
     )
   )
   // Also clear the selection - even though the setup works when more than one item is selected, it looks a bit
@@ -118,7 +126,7 @@ function toggleItemSelectionExecuted(graphComponent: GraphComponent, parameter: 
     return false
   }
 
-  const isSelected = inputMode.graphSelection.isSelected(modelItem)
+  const isSelected = inputMode.graphSelection.includes(modelItem)
   if (isSelected) {
     // the item is selected and needs to be unselected - just clear the selection
     inputMode.graphSelection.clear()

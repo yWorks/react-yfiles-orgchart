@@ -10,24 +10,16 @@ import {
   useState
 } from 'react'
 import {
+  Arrow,
+  ArrowType,
   FilteredGraphWrapper,
   GraphComponent,
-  GraphHighlightIndicatorManager,
   GraphViewerInputMode,
-  IArrow,
   IGraph,
+  INode,
   PolylineEdgeStyle,
-  Size,
-  VoidNodeStyle
-} from 'yfiles'
-import {
-  initializeFocus,
-  initializeHover,
-  initializeInputMode,
-  initializeInteractivity,
-  initializeSelection
-} from './core/input'
-import './styles/orgchart-style.css'
+  Size
+} from '@yfiles/yfiles'
 import {
   checkLicense,
   checkStylesheetLoaded,
@@ -48,6 +40,14 @@ import {
   useReactNodeRendering,
   withGraphComponent
 } from '@yworks/react-yfiles-core'
+import {
+  initializeFocus,
+  initializeHover,
+  initializeInputMode,
+  initializeInteractivity,
+  initializeSelection
+} from './core/input'
+import './styles/orgchart-style.css'
 import {
   OrgChartProvider,
   useOrgChartContext,
@@ -250,14 +250,14 @@ export interface OrgChartProps<TOrgChartItem extends OrgChartItem, TNeedle> {
    * The optional position of the popup. The default is 'north'.
    */
   popupPosition?:
-    | 'east'
-    | 'north'
-    | 'north-east'
-    | 'north-west'
-    | 'south'
-    | 'south-east'
-    | 'south-west'
-    | 'west'
+    | 'right'
+    | 'top'
+    | 'top-right'
+    | 'top-left'
+    | 'bottom'
+    | 'bottom-right'
+    | 'bottom-left'
+    | 'left'
   /**
    * An optional component used for rendering a custom popup.
    */
@@ -367,7 +367,7 @@ const OrgChartCore = withGraphComponent(
     }, [])
 
     useEffect(() => {
-      checkStylesheetLoaded(graphComponent.div, 'react-yfiles-orgchart')
+      checkStylesheetLoaded(graphComponent.htmlElement, 'react-yfiles-orgchart')
     }, [])
 
     useEffect(() => {
@@ -385,9 +385,10 @@ const OrgChartCore = withGraphComponent(
       return () => {
         // clean up
         hoverItemChangedListener &&
-          (
-            graphComponent.inputMode as GraphViewerInputMode
-          ).itemHoverInputMode.removeHoveredItemChangedListener(hoverItemChangedListener)
+          (graphComponent.inputMode as GraphViewerInputMode).itemHoverInputMode.removeEventListener(
+            'hovered-item-changed',
+            hoverItemChangedListener
+          )
       }
     }, [onItemHover])
 
@@ -406,9 +407,11 @@ const OrgChartCore = withGraphComponent(
       return () => {
         // clean up the listeners
         currentItemChangedListener &&
-          graphComponent.removeCurrentItemChangedListener(currentItemChangedListener)
+          graphComponent.removeEventListener('current-item-changed', currentItemChangedListener)
         selectedItemChangedListener &&
-          graphComponent.selection.removeItemSelectionChangedListener(selectedItemChangedListener)
+          graphComponent.selection.removeEventListener('item-added', selectedItemChangedListener)
+        selectedItemChangedListener &&
+          graphComponent.selection.removeEventListener('item-removed', selectedItemChangedListener)
       }
     }, [onItemFocus, onItemSelect])
 
@@ -422,12 +425,12 @@ const OrgChartCore = withGraphComponent(
 
     const graphSearch = useGraphSearch(graphComponent, searchNeedle, onSearch)
     // provide search hits on the context
-    orgChartGraph.getSearchHits = () => graphSearch.matchingNodes.map(n => n.tag)
+    orgChartGraph.getSearchHits = () => graphSearch.matchingNodes.map((n: INode) => n.tag)
 
     // fit graph after initial measurement
     const [finishedInitialMeasurement, setFinishedInitialMeasurement] = useState(false)
     useLayoutEffect(() => {
-      graphComponent.fitGraphBounds()
+      void graphComponent.fitGraphBounds()
     }, [finishedInitialMeasurement])
 
     // trigger node measuring on data change
@@ -484,11 +487,9 @@ function initializeDefaultStyle<TOrgChartItem extends OrgChartItem>(
 
   graph.edgeDefaults.style = new PolylineEdgeStyle({
     stroke: '2px rgb(170, 170, 170)',
-    targetArrow: IArrow.NONE
+    targetArrow: new Arrow(ArrowType.NONE)
   })
 
   // Hide the default highlight in favor of the CSS highlighting from the template styles
-  graphComponent.highlightIndicatorManager = new GraphHighlightIndicatorManager({
-    nodeStyle: VoidNodeStyle.INSTANCE
-  })
+  graphComponent.graph.decorator.nodes.highlightRenderer.hide()
 }

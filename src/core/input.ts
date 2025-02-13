@@ -1,22 +1,15 @@
 import {
   type GraphComponent,
-  GraphFocusIndicatorManager,
   GraphItemTypes,
   GraphViewerInputMode,
-  HoveredItemChangedEventArgs,
-  ICommand,
   IGraph,
   INode,
   IPort,
-  ItemHoverInputMode,
-  Key,
   type KeyboardInputMode,
   ModifierKeys,
-  ShowFocusPolicy,
-  VoidNodeStyle,
-  VoidPortStyle
-} from 'yfiles'
-import { initializePortStyle } from '../styles/orgchart-port-style'
+  IPortStyle,
+  HoveredItemChangedEventArgs
+} from '@yfiles/yfiles'
 import type { OrgChartItem } from '../OrgChart'
 import { getOrgChartItem } from './data-loading'
 import { OrgChartModel } from '../OrgChartModel'
@@ -35,7 +28,7 @@ export function initializeInputMode(graphComponent: GraphComponent, orgChart: Or
     focusableItems: GraphItemTypes.NODE,
     clickHitTestOrder: [GraphItemTypes.PORT, GraphItemTypes.NODE]
   })
-  graphViewerInputMode.addItemDoubleClickedListener((_, evt) => {
+  graphViewerInputMode.addEventListener('item-double-clicked', evt => {
     const item = evt.item
     if (item instanceof INode) {
       orgChart.zoomToItem(getOrgChartItem(item))
@@ -54,27 +47,23 @@ export function initializeHover<TOrgChartItem extends OrgChartItem>(
   graphComponent: GraphComponent
 ) {
   const inputMode = graphComponent.inputMode as GraphViewerInputMode
-  let hoverItemChangedListener = (
-    sender: ItemHoverInputMode,
-    evt: HoveredItemChangedEventArgs
-  ) => {}
   inputMode.itemHoverInputMode.hoverItems = GraphItemTypes.NODE
-  hoverItemChangedListener = (_, evt): void => {
+  const hoverItemChangedListener = (evt: HoveredItemChangedEventArgs): void => {
     // we use the highlight manager to highlight hovered items
     const manager = graphComponent.highlightIndicatorManager
     if (evt.oldItem) {
-      manager.removeHighlight(evt.oldItem)
+      manager.items?.remove(evt.oldItem)
     }
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition,@typescript-eslint/strict-boolean-expressions
     if (evt.item) {
-      manager.addHighlight(evt.item)
+      manager.items?.add(evt.item)
     }
 
     if (onHover) {
       onHover(evt.item?.tag, evt.oldItem?.tag)
     }
   }
-  inputMode.itemHoverInputMode.addHoveredItemChangedListener(hoverItemChangedListener)
+  inputMode.itemHoverInputMode.addEventListener('hovered-item-changed', hoverItemChangedListener)
   inputMode.itemHoverInputMode.hoverItems = GraphItemTypes.NODE
   return hoverItemChangedListener
 }
@@ -90,8 +79,6 @@ export function initializeInteractivity(
   const graphViewerInputMode = graphComponent.inputMode as GraphViewerInputMode
   initializeClickablePorts(graphViewerInputMode, orgChartGraph, completeGraph)
   initializeKeyboardInputMode(graphViewerInputMode.keyboardInputMode, graphComponent, orgChartGraph)
-  // set the port style after the graph is built, since we need to know the graph structure
-  initializePortStyle()
 }
 
 /**
@@ -114,7 +101,7 @@ export function initializeFocus<TOrgChartItem extends OrgChartItem>(
       }
     }
   }
-  graphComponent.addCurrentItemChangedListener(currentItemChangedListener)
+  graphComponent.addEventListener('current-item-changed', currentItemChangedListener)
   return currentItemChangedListener
 }
 
@@ -130,13 +117,14 @@ export function initializeSelection<TOrgChartItem extends OrgChartItem>(
   if (onSelect) {
     // display information about the current employee
     itemSelectionChangedListener = () => {
-      const selectedItems = graphComponent.selection.selectedNodes
+      const selectedItems = graphComponent.selection.nodes
         .map(node => getOrgChartItem<TOrgChartItem>(node))
         .toArray()
       onSelect(selectedItems)
     }
   }
-  graphComponent.selection.addItemSelectionChangedListener(itemSelectionChangedListener)
+  graphComponent.selection.addEventListener('item-added', itemSelectionChangedListener)
+  graphComponent.selection.addEventListener('item-removed', itemSelectionChangedListener)
   return itemSelectionChangedListener
 }
 
@@ -146,11 +134,7 @@ export function initializeSelection<TOrgChartItem extends OrgChartItem>(
 function initializeHighlights(graphComponent: GraphComponent): void {
   graphComponent.selectionIndicatorManager.enabled = false
 
-  // Hide the default focus highlight in favor of the CSS highlighting from the template styles
-  graphComponent.focusIndicatorManager = new GraphFocusIndicatorManager({
-    showFocusPolicy: ShowFocusPolicy.ALWAYS,
-    nodeStyle: VoidNodeStyle.INSTANCE
-  })
+  graphComponent.graph.decorator.nodes.focusRenderer.hide()
 }
 
 /**
@@ -166,12 +150,12 @@ function initializeClickablePorts(
   graphViewerInputMode.clickHitTestOrder = [GraphItemTypes.PORT, GraphItemTypes.NODE]
 
   // listen to clicks on items
-  graphViewerInputMode.addItemClickedListener((_, evt) => {
+  graphViewerInputMode.addEventListener('item-clicked', evt => {
     const port = evt.item
     if (
       port instanceof IPort &&
       completeGraph.inEdgesAt(port).size === 0 &&
-      port.style !== VoidPortStyle.INSTANCE
+      port.style !== IPortStyle.VOID_PORT_STYLE
     ) {
       // if the item is a port, and it has not incoming edges expand or collapse the subtree
       const node = port.owner
@@ -198,68 +182,50 @@ function initializeKeyboardInputMode(
   graphComponent: GraphComponent,
   orgChartGraph: OrgChartModel
 ): void {
-  const showAllCommand = ICommand.createCommand()
-
-  keyboardInputMode.addCommandBinding(
-    showAllCommand,
-    () => {
+  keyboardInputMode.addKeyBinding('*', ModifierKeys.NONE, () => {
+    if (orgChartGraph.canShowAll()) {
       void orgChartGraph.showAll()
-      return true
-    },
-    () => orgChartGraph.canShowAll()
-  )
-  keyboardInputMode.addKeyBinding(Key.MULTIPLY, ModifierKeys.NONE, showAllCommand)
+    }
+  })
 
-  keyboardInputMode.addKeyBinding({
-    key: Key.SUBTRACT,
-    execute: () => {
-      if (graphComponent.currentItem instanceof INode) {
-        void orgChartGraph.hideSubordinates(getOrgChartItem(graphComponent.currentItem))
-        return true
-      }
-      return false
-    },
-    canExecute: () =>
+  keyboardInputMode.addKeyBinding('-', ModifierKeys.NONE, () => {
+    if (
       graphComponent.currentItem instanceof INode &&
       orgChartGraph.canHideSubordinates(getOrgChartItem(graphComponent.currentItem))
+    ) {
+      void orgChartGraph.hideSubordinates(getOrgChartItem(graphComponent.currentItem))
+      return true
+    }
+    return false
   })
-  keyboardInputMode.addKeyBinding({
-    key: Key.ADD,
-    execute: () => {
-      if (graphComponent.currentItem instanceof INode) {
-        void orgChartGraph.showSubordinates(getOrgChartItem(graphComponent.currentItem))
-        return true
-      }
-      return false
-    },
-    canExecute: () =>
+  keyboardInputMode.addKeyBinding('+', ModifierKeys.NONE, () => {
+    if (
       graphComponent.currentItem instanceof INode &&
       orgChartGraph.canShowSubordinates(getOrgChartItem(graphComponent.currentItem))
+    ) {
+      void orgChartGraph.showSubordinates(getOrgChartItem(graphComponent.currentItem))
+      return true
+    }
+    return false
   })
-  keyboardInputMode.addKeyBinding({
-    key: Key.PAGE_DOWN,
-    execute: () => {
-      if (graphComponent.currentItem instanceof INode) {
-        void orgChartGraph.hideSuperior(getOrgChartItem(graphComponent.currentItem))
-        return true
-      }
-      return false
-    },
-    canExecute: () =>
+  keyboardInputMode.addKeyBinding('PageDown', ModifierKeys.NONE, () => {
+    if (
       graphComponent.currentItem instanceof INode &&
       orgChartGraph.canHideSuperior(getOrgChartItem(graphComponent.currentItem))
+    ) {
+      void orgChartGraph.hideSuperior(getOrgChartItem(graphComponent.currentItem))
+      return true
+    }
+    return false
   })
-  keyboardInputMode.addKeyBinding({
-    key: Key.PAGE_UP,
-    execute: () => {
-      if (graphComponent.currentItem instanceof INode) {
-        void orgChartGraph.showSuperior(getOrgChartItem(graphComponent.currentItem))
-        return true
-      }
-      return false
-    },
-    canExecute: () =>
+  keyboardInputMode.addKeyBinding('PageUp', ModifierKeys.NONE, () => {
+    if (
       graphComponent.currentItem instanceof INode &&
       orgChartGraph.canShowSuperior(getOrgChartItem(graphComponent.currentItem))
+    ) {
+      void orgChartGraph.showSuperior(getOrgChartItem(graphComponent.currentItem))
+      return true
+    }
+    return false
   })
 }

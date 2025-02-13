@@ -1,22 +1,16 @@
 import {
   BaseClass,
-  CompactNodePlacer,
+  Command,
+  CompactSubtreePlacer,
   CompositeLayoutData,
-  DefaultGraph,
   delegate,
-  type Edge,
   FilteredGraphWrapper,
-  FixNodeLayoutData,
-  FixNodeLayoutStage,
+  Graph,
   type GraphComponent,
   GraphStructureAnalyzer,
-  HierarchicLayout,
-  HierarchicLayoutData,
-  HierarchicLayoutEdgeLayoutDescriptor,
-  HierarchicLayoutEdgeRoutingStyle,
-  HierarchicLayoutRoutingStyle,
-  ICommand,
-  IComparer,
+  HierarchicalLayout,
+  HierarchicalLayoutData,
+  HierarchicalLayoutEdgeDescriptor,
   IEdge,
   type IEnumerable,
   type IGraph,
@@ -27,23 +21,24 @@ import {
   type IPort,
   type ItemMapping,
   type ItemMappingConvertible,
-  ITreeLayoutPortAssignment,
+  ITreeLayoutPortAssigner,
+  LayoutAnchoringPolicy,
+  LayoutAnchoringStage,
+  LayoutAnchoringStageData,
   LayoutData,
   LayoutExecutor,
   type LayoutGraph,
-  LayoutMode,
+  type LayoutNode,
   Mapper,
   MutableRectangle,
   PlaceNodesAtBarycenterStage,
   PlaceNodesAtBarycenterStageData,
+  Point,
   Rect,
   TreeLayout,
   TreeLayoutData,
-  TreeReductionStage,
-  type YNode,
-  YPoint
-} from 'yfiles'
-import { ContentRectViewportLimiter } from './ContentRectViewportLimiter.ts'
+  TreeReductionStage
+} from '@yfiles/yfiles'
 
 /**
  * A graph wrapper that can hide and show parts of a tree and keeps the layout up to date.
@@ -65,7 +60,7 @@ export class CollapsibleTree {
 
   private doingLayout = false
   // once the nodes have been arranged, remember their arrangement strategy for a more stable layout upon changes
-  private readonly compactNodePlacerStrategyMementos: IMapper<INode, unknown> = new Mapper()
+  private readonly compactSubtreePlacerStrategyMementos: IMapper<INode, unknown> = new Mapper()
 
   private graphUpdatedListener: (() => void) | null = null
   private collapsedStateUpdatedListener: ((port: IPort, collapsed: boolean) => void) | null = null
@@ -80,25 +75,23 @@ export class CollapsibleTree {
    * Optional mapping of a node to its type affecting the order of nodes in the layout.
    * See also {@link TreeLayoutData.nodeTypes}.
    */
-  nodeTypesMapping: ItemMapping<INode, unknown> | ItemMappingConvertible<INode, unknown> = () =>
-    null
+  nodeTypesMapping: ItemMapping<INode, unknown> | ItemMappingConvertible<INode, unknown> = null
 
   /**
    * Optional comparer to determine the order of subtrees in the layout.
-   * See also {@link TreeLayoutData.outEdgeComparers}.
+   * See also {@link TreeLayoutData.childOrder.outEdgeComparison}.
    */
-  outEdgeComparers:
+  outEdgeComparison:
     | ItemMapping<INode, (edge1: IEdge, edge2: IEdge) => number>
     | ItemMappingConvertible<INode, (edge1: IEdge, edge2: IEdge) => number> = () => (): number => 0
 
   constructor(
     private readonly _graphComponent: GraphComponent,
-    readonly completeGraph: IGraph = new DefaultGraph()
+    readonly completeGraph: IGraph = new Graph()
   ) {
     const nodeFilter = (node: INode): boolean => !this.hiddenNodesSet.has(node)
     this.filteredGraph = new FilteredGraphWrapper(completeGraph, nodeFilter)
 
-    _graphComponent.viewportLimiter = new ContentRectViewportLimiter()
     _graphComponent.maximumZoom = 4
     _graphComponent.minimumZoom = 0.1
   }
@@ -348,11 +341,11 @@ export class CollapsibleTree {
   /**
    * Applies the initial layout to the graph.
    */
-  applyInitialLayout(incremental: boolean = false, incrementalNodes: INode[] = []): void {
+  applyInitialLayout(fromSketch: boolean = false, incrementalNodes: INode[] = []): void {
     if (this.doingLayout) {
       return
     }
-    if (!incremental) {
+    if (!fromSketch) {
       this.hiddenNodesSet.clear()
       // inform the filter that the predicate changed, and thus the graph needs to be updated
       this.filteredGraph.nodePredicateChanged()
@@ -360,15 +353,14 @@ export class CollapsibleTree {
 
     const isTree = this.isTree()
     const layout = isTree
-      ? this.createConfiguredLayout(incremental)
-      : this.createConfiguredNonTreeLayout(incremental)
+      ? this.createConfiguredLayout(fromSketch)
+      : this.createConfiguredNonTreeLayout(fromSketch)
     const layoutData = isTree
-      ? this.createConfiguredLayoutData(this.filteredGraph)
+      ? this.createConfiguredLayoutData(this.filteredGraph, new Set(incrementalNodes))
       : this.createConfiguredNonTreeLayoutData(new Set(incrementalNodes))
 
     this.filteredGraph.applyLayout(layout, layoutData)
     this._graphComponent.fitGraphBounds()
-    this.limitViewport()
   }
 
   isTree() {
@@ -394,7 +386,7 @@ export class CollapsibleTree {
       this.unhideNode(item)
 
       this._graphComponent.currentItem = item
-      ICommand.ZOOM_TO_CURRENT_ITEM.execute(null, this._graphComponent)
+      this._graphComponent.executeCommand(Command.ZOOM_TO_CURRENT_ITEM, null)
       this._graphComponent.focus()
     }
   }
@@ -442,10 +434,9 @@ export class CollapsibleTree {
     this.filteredGraph.applyLayout(
       isTree ? this.createConfiguredLayout(false) : this.createConfiguredNonTreeLayout(false),
       isTree
-        ? this.createConfiguredLayoutData(this.filteredGraph)
+        ? this.createConfiguredLayoutData(this.filteredGraph, new Set())
         : this.createConfiguredNonTreeLayoutData()
     )
-    this.limitViewport()
 
     this.onGraphUpdated()
   }
@@ -476,12 +467,17 @@ export class CollapsibleTree {
       : this.createConfiguredNonTreeLayout(true)
 
     // create the layout (with a stage that fixes the center node in the coordinate system)
-    const layout = new FixNodeLayoutStage(coreLayout)
+    const layout = new LayoutAnchoringStage(coreLayout)
 
     const layoutData = new CompositeLayoutData()
     if (centerNode) {
       // we mark a node as the center node
-      layoutData.items.add(new FixNodeLayoutData({ fixedNodes: centerNode }))
+      layoutData.items.add(
+        new LayoutAnchoringStageData({
+          nodeAnchoringPolicies: node =>
+            centerNode === node ? LayoutAnchoringPolicy.CENTER : LayoutAnchoringPolicy.NONE
+        })
+      )
     }
     if (collapse) {
       // configure PlaceNodesAtBarycenterStage for a smooth animation
@@ -507,15 +503,12 @@ export class CollapsibleTree {
       layoutData,
       animateViewport: centerNode === null,
       easedAnimation: true,
-      duration: '0.5s',
-      fixPorts: true,
-      targetBoundsInsets: 100
+      animationDuration: '0.5s',
+      portPlacementPolicies: 'keep-parameter',
+      targetBoundsPadding: 100
     })
 
     await executor.start()
-    this.limitViewport()
-    // the commands CanExecute state might have changed - trigger a requery
-    ICommand.invalidateRequerySuggested()
     this.doingLayout = false
   }
 
@@ -537,39 +530,59 @@ export class CollapsibleTree {
   /**
    * Creates a {@link TreeLayoutData} for the tree layout
    */
-  private createConfiguredLayoutData(graph: IGraph = null!): LayoutData {
+  private createConfiguredLayoutData(
+    graph: IGraph = null!,
+    incrementalNodes: Set<INode> = new Set()
+  ): LayoutData {
+    const hasIncrementalParent = (node: INode): boolean =>
+      graph.inDegree(node) > 0 && incrementalNodes.has(graph.predecessors(node).at(0)!)
+
+    const incrementalEdgesComparison = (): ((edge1: IEdge, edge2: IEdge) => number) => {
+      return (edge1: IEdge, edge2: IEdge): number => {
+        const y1 = edge1.targetNode.layout.center.y
+        const y2 = edge2.targetNode.layout.center.y
+        if (y1 === y2) {
+          const x1 = edge1.targetNode.layout.center.x
+          const x2 = edge2.targetNode.layout.center.x
+          if (x1 === x2) {
+            return 0
+          }
+          return x1 < x2 ? -1 : 1
+        }
+        return y1 < y2 ? -1 : 1
+      }
+    }
+
     return new TreeLayoutData({
       assistantNodes: (node: INode): boolean =>
-        this.isAssistantNode(node) && graph.inDegree(node) > 0,
-      outEdgeComparers: this.outEdgeComparers,
+        this.isAssistantNode(node) && graph.inDegree(node) > 0 && !hasIncrementalParent(node),
+      childOrder: {
+        outEdgeComparators:
+          incrementalNodes.size > 0 ? incrementalEdgesComparison : this.outEdgeComparison
+      },
       nodeTypes: this.nodeTypesMapping,
-      compactNodePlacerStrategyMementos: this.compactNodePlacerStrategyMementos
+      compactSubtreePlacerStrategyMementos: this.compactSubtreePlacerStrategyMementos
     })
   }
 
   private createConfiguredNonTreeLayoutData(incrementalNodes: Set<INode> = new Set()) {
-    return new HierarchicLayoutData({
+    return new HierarchicalLayoutData({
       sourceGroupIds: (edge: IEdge) => edge.sourceNode + '_source',
-      incrementalHints: (node: INode, factory) =>
-        incrementalNodes.has(node) ? factory.createLayerIncrementallyHint(node) : null
+      incrementalNodes: incrementalNodes
     })
   }
 
-  private createConfiguredNonTreeLayout(incremental: boolean): ILayoutAlgorithm {
-    const hierarchicLayout = new HierarchicLayout({
-      layoutMode: incremental ? LayoutMode.INCREMENTAL : LayoutMode.FROM_SCRATCH,
+  private createConfiguredNonTreeLayout(fromSketch: boolean): ILayoutAlgorithm {
+    const hierarchicLayout = new HierarchicalLayout({
+      fromSketchMode: fromSketch,
       nodeToEdgeDistance: 20,
-      edgeLayoutDescriptor: new HierarchicLayoutEdgeLayoutDescriptor({
+      defaultEdgeDescriptor: new HierarchicalLayoutEdgeDescriptor({
         minimumFirstSegmentLength: 20,
-        minimumLastSegmentLength: 20,
-        routingStyle: new HierarchicLayoutRoutingStyle({
-          defaultEdgeRoutingStyle: HierarchicLayoutEdgeRoutingStyle.ORTHOGONAL,
-          backLoopRoutingStyle: HierarchicLayoutEdgeRoutingStyle.ORTHOGONAL
-        })
+        minimumLastSegmentLength: 20
       })
     })
 
-    hierarchicLayout.appendStage(new PlaceNodesAtBarycenterStage())
+    hierarchicLayout.layoutStages.append(new PlaceNodesAtBarycenterStage())
 
     return hierarchicLayout
   }
@@ -578,56 +591,28 @@ export class CollapsibleTree {
    * Creates a tree layout that handles assistant nodes and stack leaf nodes.
    * @returns A configured TreeLayout.
    */
-  private createConfiguredLayout(incremental: boolean): ILayoutAlgorithm {
+  private createConfiguredLayout(fromSketch: boolean): ILayoutAlgorithm {
     const treeLayout = new TreeLayout()
-    treeLayout.defaultPortAssignment = new (class extends BaseClass(ITreeLayoutPortAssignment) {
-      assignPorts(graph: LayoutGraph, node: YNode): void {
-        const inEdge = node.firstInEdge
+    treeLayout.defaultPortAssigner = new (class extends BaseClass(ITreeLayoutPortAssigner) {
+      assignPorts(graph: LayoutGraph, node: LayoutNode): void {
+        const inEdge = node.inEdges.first()
         if (inEdge) {
-          graph.setTargetPointRel(inEdge, YPoint.ORIGIN)
+          inEdge.targetPortOffset = Point.ORIGIN
         }
-        const halfHeight = graph.getSize(node).height / 2
+        const halfHeight = node.layout.size.height / 2
         for (const outEdge of node.outEdges) {
-          graph.setSourcePointRel(outEdge, new YPoint(0, halfHeight))
+          outEdge.sourcePortOffset = new Point(0, halfHeight)
         }
       }
     })()
 
-    if (incremental) {
-      treeLayout.defaultOutEdgeComparer = IComparer.create<Edge>(
-        (edge1: Edge, edge2: Edge): number => {
-          const y1 = (edge1.graph as LayoutGraph).getCenterY(edge1.target)
-          const y2 = (edge2.graph as LayoutGraph).getCenterY(edge2.target)
-          if (y1 === y2) {
-            const x1 = (edge1.graph as LayoutGraph).getCenterX(edge1.target)
-            const x2 = (edge2.graph as LayoutGraph).getCenterX(edge2.target)
-            if (x1 === x2) {
-              return 0
-            }
-            return x1 < x2 ? -1 : 1
-          }
-          return y1 < y2 ? -1 : 1
-        }
-      )
-    }
-
     // we let the CompactNodePlacer arrange the nodes
-    treeLayout.defaultNodePlacer = new CompactNodePlacer()
+    treeLayout.defaultSubtreePlacer = new CompactSubtreePlacer()
 
     // layout stages used to place nodes at barycenter for smoother layout animations
-    treeLayout.appendStage(new PlaceNodesAtBarycenterStage())
+    treeLayout.layoutStages.append(new PlaceNodesAtBarycenterStage())
 
     return new TreeReductionStage(treeLayout)
-  }
-
-  /**
-   * Set up a ViewportLimiter that makes sure that the explorable region doesn't exceed the graph size.
-   */
-  private limitViewport(): void {
-    this._graphComponent.updateContentRect()
-    const limiter = this._graphComponent.viewportLimiter
-    limiter.honorBothDimensions = false
-    limiter.bounds = this._graphComponent.contentRect
   }
 
   private addToHiddenNodes(nodes: Iterable<INode>): void {
