@@ -1,6 +1,6 @@
 {
   "name": "@yworks/react-yfiles-orgchart",
-  "version": "1.2.1",
+  "version": "2.0.0",
   "author": {
     "name": "yFiles for HTML team @ yWorks GmbH",
     "email": "yfileshtml@yworks.com"
@@ -44,7 +44,7 @@
     "typescript": "^5.3.2"
   },
   "dependencies": {
-    "@yworks/react-yfiles-core": "^2.0.0"
+    "@yworks/react-yfiles-core": "^3.0.0"
   },
   "files": [
     "LICENSE",

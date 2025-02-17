@@ -37,7 +37,8 @@ import {
   Rect,
   TreeLayout,
   TreeLayoutData,
-  TreeReductionStage
+  TreeReductionStage,
+  ViewportLimitingPolicy
 } from '@yfiles/yfiles'
 
 /**
@@ -92,6 +93,7 @@ export class CollapsibleTree {
     const nodeFilter = (node: INode): boolean => !this.hiddenNodesSet.has(node)
     this.filteredGraph = new FilteredGraphWrapper(completeGraph, nodeFilter)
 
+    _graphComponent.viewportLimiter.policy = ViewportLimitingPolicy.WITHIN_MARGINS
     _graphComponent.maximumZoom = 4
     _graphComponent.minimumZoom = 0.1
   }

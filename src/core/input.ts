@@ -64,7 +64,6 @@ export function initializeHover<TOrgChartItem extends OrgChartItem>(
     }
   }
   inputMode.itemHoverInputMode.addEventListener('hovered-item-changed', hoverItemChangedListener)
-  inputMode.itemHoverInputMode.hoverItems = GraphItemTypes.NODE
   return hoverItemChangedListener
 }
 
@@ -132,8 +131,7 @@ export function initializeSelection<TOrgChartItem extends OrgChartItem>(
  * Initializes the highlights for selected or focused elements.
  */
 function initializeHighlights(graphComponent: GraphComponent): void {
-  graphComponent.selectionIndicatorManager.enabled = false
-
+  graphComponent.graph.decorator.nodes.selectionRenderer.hide()
   graphComponent.graph.decorator.nodes.focusRenderer.hide()
 }
 
