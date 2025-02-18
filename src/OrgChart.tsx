@@ -247,7 +247,7 @@ export interface OrgChartProps<TOrgChartItem extends OrgChartItem, TNeedle> {
    */
   renderContextMenu?: ComponentType<RenderContextMenuProps<TOrgChartItem>>
   /**
-   * The optional position of the popup. The default is 'north'.
+   * The optional position of the popup. The default is 'top'.
    */
   popupPosition?:
     | 'right'
