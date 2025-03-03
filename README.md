@@ -24,7 +24,7 @@ You can learn how to work with the yFiles npm module in our [Developer’s Guide
    In addition to yFiles, the Organization Chart component requires React to be installed in your project.
    If you want to start your project from scratch, we recommend using vite:
    ```
-   npm create vite@latest my-orgchart-app -- --template react-ts
+   npm create vite@6.1.1 my-orgchart-app -- --template react-ts
    ```
 
    Add the yFiles dependency:
