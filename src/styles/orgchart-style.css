@@ -105,6 +105,8 @@
 
 .yfiles-react-port {
     transform: scale(1);
+    transform-origin: center;
+    transform-box: fill-box;
     transition: 0.2s ease-in-out;
     fill: #aaaaaa;
 }
@@ -143,4 +145,3 @@
     align-items: center;
     font-family: "Roboto", sans-serif;
 }
-

@@ -66,7 +66,7 @@ export default function EditablePopup() {
     <OrgChart
       data={orgChartData}
       renderTooltip={RenderOrgChartTooltip}
-      popupPosition="north"
+      popupPosition="top"
       renderPopup={OrgChartRenderPopup}
     ></OrgChart>
   )

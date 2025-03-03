@@ -5,7 +5,7 @@ import {
   EdgeCreator,
   type IGraph,
   type INode
-} from 'yfiles'
+} from '@yfiles/yfiles'
 import type { OrgChartItem, OrgChartItemId } from '../OrgChart'
 import {
   convertToPolylineEdgeStyle,
@@ -121,14 +121,14 @@ export function initializeGraphManager<TOrgChartItem extends OrgChartItem>(
     (item: TOrgChartItem) => getNode(item, graph)?.layout.y ?? 0
   )
 
-  nodesSource.nodeCreator.addNodeUpdatedListener((_, evt) => {
+  nodesSource.nodeCreator.addEventListener('node-updated', (evt) => {
     nodesSource!.nodeCreator.updateLayout(evt.graph, evt.item, evt.dataItem)
     nodesSource!.nodeCreator.updateStyle(evt.graph, evt.item, evt.dataItem)
     nodesSource!.nodeCreator.updateTag(evt.graph, evt.item, evt.dataItem)
     nodesSource!.nodeCreator.updateLabels(evt.graph, evt.item, evt.dataItem)
   })
 
-  edgeCreator.addEdgeUpdatedListener((_, evt) => {
+  edgeCreator.addEventListener('edge-updated', (evt) => {
     edgeCreator.updateStyle(evt.graph, evt.item, evt.dataItem)
     edgeCreator.updateTag(evt.graph, evt.item, evt.dataItem)
     edgeCreator.updateLabels(evt.graph, evt.item, evt.dataItem)

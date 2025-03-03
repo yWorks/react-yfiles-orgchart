@@ -1,4 +1,4 @@
-import { GraphComponent, ICommand, IEdge, IGraph, INode } from 'yfiles'
+import { GraphComponent, Command, IEdge, IGraph, INode } from '@yfiles/yfiles'
 import { OrgChartConnection, OrgChartItem } from './OrgChart'
 import { CollapsibleTree } from './core/CollapsibleTree'
 import {
@@ -284,19 +284,19 @@ export function createOrgChartModel(
     zoomTo,
 
     zoomIn() {
-      ICommand.INCREASE_ZOOM.execute(null, graphComponent)
+      graphComponent.executeCommand(Command.INCREASE_ZOOM, null)
     },
 
     zoomOut() {
-      ICommand.DECREASE_ZOOM.execute(null, graphComponent)
+      graphComponent.executeCommand(Command.DECREASE_ZOOM, null)
     },
 
     zoomToOriginal() {
-      ICommand.ZOOM.execute(1.0, graphComponent)
+      graphComponent.executeCommand(Command.ZOOM, 1.0)
     },
 
     fitContent() {
-      ICommand.FIT_GRAPH_BOUNDS.execute(null, graphComponent)
+      graphComponent.executeCommand(Command.FIT_GRAPH_BOUNDS, null)
     },
 
     addGraphUpdatedListener(listener: () => void) {

@@ -28,7 +28,7 @@ To adjust the context menu visualization, add a custom React component using the
       return (
         <OrgChart
           data={data}
-          renderContextMenu={({item}) => (
+          renderContextMenu={({item}) => (item &&
            <button onClick={() => alert(\`\${item.name} clicked!\`)}>Click here!</button>
           )}
         ></OrgChart>

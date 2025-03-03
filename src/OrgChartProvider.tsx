@@ -1,7 +1,6 @@
 import { createContext, PropsWithChildren, useContext, useMemo } from 'react'
 import { CollapsibleTree } from './core/CollapsibleTree'
-import type { GraphComponent, INode } from 'yfiles'
-import { setCollapsedState } from './styles/orgchart-port-style.ts'
+import type { GraphComponent, INode } from '@yfiles/yfiles'
 import { useGraphComponent, withGraphComponentProvider } from '@yworks/react-yfiles-core'
 import { createOrgChartModel, OrgChartModel } from './OrgChartModel'
 
@@ -109,7 +108,6 @@ export const OrgChartProvider = withGraphComponentProvider(({ children }: PropsW
     }
     const collapsibleTree = new CollapsibleTree(graphComponent)
     graphComponent.graph = collapsibleTree.filteredGraph
-    collapsibleTree.addCollapsedStateUpdatedListener(setCollapsedState)
     collapsibleTree.isAssistantNode = (node: INode): boolean => node.tag?.assistant ?? false
     // TODO provide customizable out-edge comparer
     const orgChartModel = createOrgChartModel(collapsibleTree, graphComponent)

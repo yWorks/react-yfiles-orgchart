@@ -16,7 +16,11 @@ export default function Header() {
   return (
     <>
       <header>
-        <select title="examples" value={currentPath} onChange={event => setCurrentPath(event.target.value)}>
+        <select
+          title="examples"
+          value={currentPath}
+          onChange={event => setCurrentPath(event.target.value)}
+        >
           {routes.map(route => (
             <option value={route.path} key={route.path}>
               {route.title}
@@ -26,7 +30,9 @@ export default function Header() {
         {routes
           .filter(route => route.path === currentPath)
           .map(route => (
-            <div className="description">{route.description}</div>
+            <div className="description" key={route.path}>
+              {route.description}
+            </div>
           ))}
       </header>
       <Outlet />
