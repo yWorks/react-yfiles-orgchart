@@ -34,6 +34,7 @@ import {
   PlaceNodesAtBarycenterStage,
   PlaceNodesAtBarycenterStageData,
   Point,
+  PortPlacementPolicy,
   Rect,
   TreeLayout,
   TreeLayoutData,
@@ -506,7 +507,7 @@ export class CollapsibleTree {
       animateViewport: centerNode === null,
       easedAnimation: true,
       animationDuration: '0.5s',
-      portPlacementPolicies: 'keep-parameter',
+      portPlacementPolicies: PortPlacementPolicy.KEEP_PARAMETER,
       targetBoundsPadding: 100
     })
 
