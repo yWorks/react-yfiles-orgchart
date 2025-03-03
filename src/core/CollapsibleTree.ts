@@ -77,7 +77,8 @@ export class CollapsibleTree {
    * Optional mapping of a node to its type affecting the order of nodes in the layout.
    * See also {@link TreeLayoutData.nodeTypes}.
    */
-  nodeTypesMapping: ItemMapping<INode, unknown> | ItemMappingConvertible<INode, unknown> = null
+  nodeTypesMapping: ItemMapping<INode, unknown> | ItemMappingConvertible<INode, unknown> = () =>
+    null
 
   /**
    * Optional comparer to determine the order of subtrees in the layout.
