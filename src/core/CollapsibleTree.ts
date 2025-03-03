@@ -495,7 +495,7 @@ export class CollapsibleTree {
     layoutData.items.add(
       isTree
         ? this.createConfiguredLayoutData(this.filteredGraph)
-        : // for hierarchic layout, mark all descendants as incremental during expand,
+        : // for hierarchical layout, mark all descendants as incremental during expand,
           // when collapsing no incremental nodes are needed
           this.createConfiguredNonTreeLayoutData(collapse ? undefined : incrementalNodes)
     )
@@ -577,7 +577,7 @@ export class CollapsibleTree {
   }
 
   private createConfiguredNonTreeLayout(fromSketch: boolean): ILayoutAlgorithm {
-    const hierarchicLayout = new HierarchicalLayout({
+    const hierarchicalLayout = new HierarchicalLayout({
       fromSketchMode: fromSketch,
       nodeToEdgeDistance: 20,
       defaultEdgeDescriptor: new HierarchicalLayoutEdgeDescriptor({
@@ -586,9 +586,9 @@ export class CollapsibleTree {
       })
     })
 
-    hierarchicLayout.layoutStages.append(new PlaceNodesAtBarycenterStage())
+    hierarchicalLayout.layoutStages.append(new PlaceNodesAtBarycenterStage())
 
-    return hierarchicLayout
+    return hierarchicalLayout
   }
 
   /**
