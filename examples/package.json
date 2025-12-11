@@ -11,27 +11,27 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@emotion/styled": "^11.14.0",
-    "@mui/material": "^6.4.8",
-    "@mui/styled-engine-sc": "^6.4.6",
+    "@emotion/styled": "^11.14.1",
+    "@mui/material": "^7.3.6",
+    "@mui/styled-engine-sc": "^7.3.6",
     "@yworks/react-yfiles-orgchart": "../",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "react-router-dom": "^7.4.0",
-    "styled-components": "^6.1.16"
+    "react": "^19.2.1",
+    "react-dom": "^19.2.1",
+    "react-router-dom": "^7.10.1",
+    "styled-components": "^6.1.19"
   },
   "devDependencies": {
-    "@playwright/test": "^1.51.1",
-    "@types/node": "^22.13.13",
-    "@types/react": "^19.0.12",
-    "@types/react-dom": "^19.0.4",
-    "@typescript-eslint/eslint-plugin": "^8.28.0",
-    "@typescript-eslint/parser": "^8.28.0",
-    "@vitejs/plugin-react": "^4.3.4",
-    "eslint": "^9.23.0",
-    "eslint-plugin-react-hooks": "^5.2.0",
-    "eslint-plugin-react-refresh": "^0.4.19",
-    "typescript": "^5.8.2",
-    "vite": "^6.2.3"
+    "@playwright/test": "^1.57.0",
+    "@types/node": "^25.0.0",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "@typescript-eslint/eslint-plugin": "^8.49.0",
+    "@typescript-eslint/parser": "^8.49.0",
+    "@vitejs/plugin-react": "^5.1.2",
+    "eslint": "^9.39.1",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.4.24",
+    "typescript": "^5.9.3",
+    "vite": "^7.2.7"
   }
 }
