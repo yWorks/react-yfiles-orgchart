@@ -15,8 +15,8 @@
     "@mui/material": "^7.3.6",
     "@mui/styled-engine-sc": "^7.3.6",
     "@yworks/react-yfiles-orgchart": "../",
-    "react": "^19.2.1",
-    "react-dom": "^19.2.1",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
     "react-router-dom": "^7.10.1",
     "styled-components": "^6.1.19"
   },
