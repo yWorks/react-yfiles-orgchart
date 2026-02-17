@@ -31,7 +31,7 @@ You can learn how to work with the yFiles npm module in our [Developer’s Guide
 
    Add the yFiles dependency:
    ```
-   npm install <yFiles package path>/lib-dev/yfiles-30.0.4+dev.tgz
+   npm install <yFiles package path>/lib-dev/yfiles-<yFiles version>+dev.tgz
    ```
 
    <details>
@@ -43,7 +43,7 @@ You can learn how to work with the yFiles npm module in our [Developer’s Guide
       "dependencies": {
         "react": "^19.2.0",
         "react-dom": "^19.2.0",
-        "@yfiles/yfiles": "./lib-dev/yfiles-30.0.4+dev.tgz"
+        "@yfiles/yfiles": "file:<yFiles package path>/lib-dev/yfiles-<yFiles version>+dev.tgz"
      }
    ```
    </details>
