@@ -9,6 +9,16 @@ This component enables seamless integration for displaying organization charts i
 
 ## Getting Started
 
+### AI-Powered Setup
+
+If you are using an AI-powered development environment or an LLM-based agent, you can accelerate the setup process by providing the following prompt:
+
+```text
+fetch the https://docs.yworks.com/react-yfiles-orgchart/ai/agent-start.md and follow its instructions
+```
+
+This will guide the agent to install the necessary dependencies and set up the specialized agent skill for organization charts.
+
 ### Prerequisites
 
 To use the Organization Chart component, [yFiles for HTML](https://www.yworks.com/products/yfiles-for-html) is required.
