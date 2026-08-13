@@ -1,8 +1,8 @@
-import { createContext, PropsWithChildren, useContext, useMemo } from 'react'
+import { createContext, type JSX, type PropsWithChildren, useContext, useMemo } from 'react'
 import { CollapsibleTree } from './core/CollapsibleTree'
 import type { GraphComponent, INode } from '@yfiles/yfiles'
 import { useGraphComponent, withGraphComponentProvider } from '@yworks/react-yfiles-core'
-import { createOrgChartModel, OrgChartModel } from './OrgChartModel'
+import { createOrgChartModel, type OrgChartModel } from './OrgChartModel'
 
 const OrgChartContext = createContext<OrgChartModel | null>(null)
 
@@ -95,25 +95,26 @@ const gcToModel = new WeakMap<GraphComponent, OrgChartModel>()
  * }
  * ```
  */
-export const OrgChartProvider = withGraphComponentProvider(({ children }: PropsWithChildren) => {
-  const graphComponent = useGraphComponent()
+export const OrgChartProvider: (props: PropsWithChildren) => JSX.Element =
+  withGraphComponentProvider(({ children }: PropsWithChildren) => {
+    const graphComponent = useGraphComponent()
 
-  if (!graphComponent) {
-    return children
-  }
-
-  const orgChart = useMemo(() => {
-    if (gcToModel.has(graphComponent)) {
-      return gcToModel.get(graphComponent)!
+    if (!graphComponent) {
+      return children
     }
-    const collapsibleTree = new CollapsibleTree(graphComponent)
-    graphComponent.graph = collapsibleTree.filteredGraph
-    collapsibleTree.isAssistantNode = (node: INode): boolean => node.tag?.assistant ?? false
-    // TODO provide customizable out-edge comparer
-    const orgChartModel = createOrgChartModel(collapsibleTree, graphComponent)
-    gcToModel.set(graphComponent, orgChartModel)
-    return orgChartModel
-  }, [graphComponent])
 
-  return <OrgChartContext.Provider value={orgChart}>{children}</OrgChartContext.Provider>
-})
+    const orgChart = useMemo(() => {
+      if (gcToModel.has(graphComponent)) {
+        return gcToModel.get(graphComponent)!
+      }
+      const collapsibleTree = new CollapsibleTree(graphComponent)
+      graphComponent.graph = collapsibleTree.filteredGraph
+      collapsibleTree.isAssistantNode = (node: INode): boolean => node.tag?.assistant ?? false
+      // TODO provide customizable out-edge comparer
+      const orgChartModel = createOrgChartModel(collapsibleTree, graphComponent)
+      gcToModel.set(graphComponent, orgChartModel)
+      return orgChartModel
+    }, [graphComponent])
+
+    return <OrgChartContext.Provider value={orgChart}>{children}</OrgChartContext.Provider>
+  })

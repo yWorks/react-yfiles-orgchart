@@ -1,14 +1,21 @@
-import { CustomOrgChartItem, OrgChart, OrgChartConnection, OrgChartItem } from '../OrgChart.tsx'
 import {
-  ContextMenuItem,
-  ControlButton,
+  type CustomOrgChartItem,
+  type OrgChart,
+  type OrgChartConnection,
+  type OrgChartItem
+} from '../OrgChart.tsx'
+import {
+  type ContextMenuItem,
+  type ControlButton,
+  type Controls,
+  type ControlsProps,
   DefaultControlButtons,
-  RenderNodeProps as RenderItemProps,
-  RenderTooltipProps,
-  RenderPopupProps
+  type RenderNodeProps as RenderItemProps,
+  type RenderPopupProps,
+  type RenderTooltipProps
 } from '@yworks/react-yfiles-core'
 import { useOrgChartContext } from '../OrgChartProvider.tsx'
-import { useMemo, useState } from 'react'
+import { type JSX, useMemo, useState } from 'react'
 import './orgchart-style.css'
 
 /**
@@ -69,7 +76,7 @@ export function RenderOrgChartItem<TOrgChartItem extends OrgChartItem>({
   hovered,
   focused,
   selected
-}: RenderItemProps<TOrgChartItem>) {
+}: RenderItemProps<TOrgChartItem>): JSX.Element {
   const customOrgChartItem = dataItem as CustomOrgChartItem
   const properties = findProperties(customOrgChartItem)
 
@@ -158,7 +165,7 @@ function getHighlightClasses(selected: boolean, hovered: boolean, focused: boole
   return highlights.join(' ')
 }
 
-function findProperties(data: CustomOrgChartItem) {
+function findProperties(data: CustomOrgChartItem): string[] {
   const defaultProperties = ['position', 'name', 'email', 'phone', 'icon', 'status']
   return Object.keys(data)
     .sort((property1, property2) => {
@@ -194,7 +201,7 @@ function findProperties(data: CustomOrgChartItem) {
  */
 export function RenderOrgChartTooltip<TOrgChartItem extends OrgChartItem>({
   data
-}: RenderTooltipProps<TOrgChartItem | OrgChartConnection<TOrgChartItem>>) {
+}: RenderTooltipProps<TOrgChartItem | OrgChartConnection<TOrgChartItem>>): JSX.Element | null {
   // Currently, no tooltips are shown for edges.
   if ('source' in data && 'target' in data) {
     return null
@@ -223,7 +230,7 @@ export function RenderOrgChartTooltip<TOrgChartItem extends OrgChartItem>({
 export function RenderOrgChartPopup<TOrgChartItem extends OrgChartItem>({
   item,
   onClose
-}: RenderPopupProps<TOrgChartItem>) {
+}: RenderPopupProps<TOrgChartItem>): JSX.Element {
   return (
     <div className="yfiles-react-popup__content">
       {stringifyData('name' in item ? item.name : item.id)}

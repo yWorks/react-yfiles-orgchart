@@ -25,7 +25,7 @@ import {
   LayoutAnchoringPolicy,
   LayoutAnchoringStage,
   LayoutAnchoringStageData,
-  LayoutData,
+  type LayoutData,
   LayoutExecutor,
   type LayoutGraph,
   type LayoutNode,
@@ -367,7 +367,7 @@ export class CollapsibleTree {
     this._graphComponent.fitGraphBounds()
   }
 
-  isTree() {
+  isTree(): boolean {
     return new GraphStructureAnalyzer(this.completeGraph).isTree()
   }
 
@@ -419,7 +419,7 @@ export class CollapsibleTree {
     this._graphComponent.zoomToAnimated(targetBounds.toRect().getEnlarged(200))
   }
 
-  private unhideNode(item: INode) {
+  private unhideNode(item: INode): void {
     if (!this.filteredGraph.nodes.includes(item)) {
       // the given node is hidden, make it visible
       this.showItem(item)
@@ -478,7 +478,7 @@ export class CollapsibleTree {
       // we mark a node as the center node
       layoutData.items.add(
         new LayoutAnchoringStageData({
-          nodeAnchoringPolicies: node =>
+          nodeAnchoringPolicies: (node: INode): LayoutAnchoringPolicy =>
             centerNode === node ? LayoutAnchoringPolicy.CENTER : LayoutAnchoringPolicy.NONE
         })
       )
@@ -569,9 +569,11 @@ export class CollapsibleTree {
     })
   }
 
-  private createConfiguredNonTreeLayoutData(incrementalNodes: Set<INode> = new Set()) {
+  private createConfiguredNonTreeLayoutData(
+    incrementalNodes: Set<INode> = new Set()
+  ): HierarchicalLayoutData {
     return new HierarchicalLayoutData({
-      sourceGroupIds: (edge: IEdge) => edge.sourceNode + '_source',
+      sourceGroupIds: (edge: IEdge): string => edge.sourceNode + '_source',
       incrementalNodes: incrementalNodes
     })
   }

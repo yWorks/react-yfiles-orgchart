@@ -1,9 +1,10 @@
 import {
-  ComponentType,
-  CSSProperties,
-  Dispatch,
-  PropsWithChildren,
-  SetStateAction,
+  type ComponentType,
+  type CSSProperties,
+  type Dispatch,
+  type JSX,
+  type PropsWithChildren,
+  type SetStateAction,
   useEffect,
   useLayoutEffect,
   useMemo,
@@ -12,11 +13,11 @@ import {
 import {
   Arrow,
   ArrowType,
-  FilteredGraphWrapper,
-  GraphComponent,
-  GraphViewerInputMode,
-  IGraph,
-  INode,
+  type FilteredGraphWrapper,
+  type GraphComponent,
+  type GraphViewerInputMode,
+  type IGraph,
+  type INode,
   PolylineEdgeStyle,
   Size
 } from '@yfiles/yfiles'
@@ -24,17 +25,17 @@ import {
   checkLicense,
   checkStylesheetLoaded,
   ContextMenu,
-  ContextMenuItemProvider,
-  EdgeStyle as ConnectionStyle,
+  type ContextMenuItemProvider,
+  type EdgeStyle as ConnectionStyle,
   LicenseError,
-  NodeRenderInfo,
+  type NodeRenderInfo,
   Popup,
   ReactComponentHtmlNodeStyle,
   ReactNodeRendering,
-  RenderContextMenuProps,
-  RenderNodeProps as RenderItemProps,
-  RenderPopupProps,
-  RenderTooltipProps,
+  type RenderContextMenuProps,
+  type RenderNodeProps as RenderItemProps,
+  type RenderPopupProps,
+  type RenderTooltipProps,
   Tooltip,
   useGraphSearch,
   useReactNodeRendering,
@@ -56,7 +57,7 @@ import {
 import { setPortStylesToFirstOutgoingPorts } from './styles/orgchart-port-style.ts'
 import { RenderOrgChartItem } from './styles/Templates.tsx'
 import { initializeGraphManager } from './core/data-loading.ts'
-import { OrgChartModel, OrgChartModelInternal } from './OrgChartModel.ts'
+import type { OrgChartModel, OrgChartModelInternal } from './OrgChartModel.ts'
 
 /**
  * The item's unique id.
@@ -250,14 +251,7 @@ export interface OrgChartProps<TOrgChartItem extends OrgChartItem, TNeedle> {
    * The optional position of the popup. The default is 'top'.
    */
   popupPosition?:
-    | 'right'
-    | 'top'
-    | 'top-right'
-    | 'top-left'
-    | 'bottom'
-    | 'bottom-right'
-    | 'bottom-left'
-    | 'left'
+    'right' | 'top' | 'top-right' | 'top-left' | 'bottom' | 'bottom-right' | 'bottom-left' | 'left'
   /**
    * An optional component used for rendering a custom popup.
    */
@@ -300,7 +294,7 @@ function App() {
  */
 export function OrgChart<TOrgChartItem extends OrgChartItem = CustomOrgChartItem, TNeedle = string>(
   props: OrgChartProps<TOrgChartItem, TNeedle> & PropsWithChildren
-) {
+): JSX.Element {
   if (!checkLicense()) {
     return (
       <LicenseError
@@ -382,7 +376,7 @@ const OrgChartCore = withGraphComponent(
     useEffect(() => {
       const hoverItemChangedListener = initializeHover(onItemHover, graphComponent)
 
-      return () => {
+      return (): void => {
         // clean up
         hoverItemChangedListener &&
           (graphComponent.inputMode as GraphViewerInputMode).itemHoverInputMode.removeEventListener(
@@ -404,7 +398,7 @@ const OrgChartCore = withGraphComponent(
         (graphComponent.graph as FilteredGraphWrapper).wrappedGraph!
       )
 
-      return () => {
+      return (): void => {
         // clean up the listeners
         currentItemChangedListener &&
           graphComponent.removeEventListener('current-item-changed', currentItemChangedListener)
@@ -425,7 +419,8 @@ const OrgChartCore = withGraphComponent(
 
     const graphSearch = useGraphSearch(graphComponent, searchNeedle, onSearch)
     // provide search hits on the context
-    orgChartGraph.getSearchHits = () => graphSearch.matchingNodes.map((n: INode) => n.tag)
+    orgChartGraph.getSearchHits = (): TOrgChartItem[] =>
+      graphSearch.matchingNodes.map((n: INode) => n.tag)
 
     // fit graph after initial measurement
     const [finishedInitialMeasurement, setFinishedInitialMeasurement] = useState(false)

@@ -1,4 +1,10 @@
-import { FilteredGraphWrapper, FreeNodePortLocationModel, IGraph, IPortStyle, Size } from '@yfiles/yfiles'
+import {
+  type FilteredGraphWrapper,
+  FreeNodePortLocationModel,
+  type IGraph,
+  IPortStyle,
+  Size
+} from '@yfiles/yfiles'
 import { CollapseExpandPortStyle } from './CollapseExpandPortStyle.ts'
 
 /**

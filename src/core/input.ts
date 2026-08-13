@@ -2,17 +2,17 @@ import {
   type GraphComponent,
   GraphItemTypes,
   GraphViewerInputMode,
-  IGraph,
+  type IGraph,
   INode,
   IPort,
   type KeyboardInputMode,
   ModifierKeys,
   IPortStyle,
-  HoveredItemChangedEventArgs
+  type HoveredItemChangedEventArgs
 } from '@yfiles/yfiles'
 import type { OrgChartItem } from '../OrgChart'
 import { getOrgChartItem } from './data-loading'
-import { OrgChartModel } from '../OrgChartModel'
+import type { OrgChartModel } from '../OrgChartModel'
 import { enableSingleSelection } from './SingleSelectionHelper.ts'
 
 /**
@@ -45,7 +45,7 @@ export function initializeInputMode(graphComponent: GraphComponent, orgChart: Or
 export function initializeHover<TOrgChartItem extends OrgChartItem>(
   onHover: ((item: TOrgChartItem | null, oldItem?: TOrgChartItem | null) => void) | undefined,
   graphComponent: GraphComponent
-) {
+): (evt: HoveredItemChangedEventArgs) => void {
   const inputMode = graphComponent.inputMode as GraphViewerInputMode
   inputMode.itemHoverInputMode.hoverItems = GraphItemTypes.NODE
   const hoverItemChangedListener = (evt: HoveredItemChangedEventArgs): void => {
@@ -87,11 +87,11 @@ export function initializeInteractivity(
 export function initializeFocus<TOrgChartItem extends OrgChartItem>(
   onFocus: ((item: TOrgChartItem | null) => void) | undefined,
   graphComponent: GraphComponent
-) {
-  let currentItemChangedListener = () => {}
+): () => void {
+  let currentItemChangedListener = (): void => {}
   if (onFocus) {
     // display information about the current employee
-    currentItemChangedListener = () => {
+    currentItemChangedListener = (): void => {
       const currentItem = graphComponent.currentItem
       if (currentItem instanceof INode) {
         onFocus(getOrgChartItem<TOrgChartItem>(currentItem))
@@ -111,11 +111,11 @@ export function initializeFocus<TOrgChartItem extends OrgChartItem>(
 export function initializeSelection<TOrgChartItem extends OrgChartItem>(
   onSelect: ((selectedItems: TOrgChartItem[]) => void) | undefined,
   graphComponent: GraphComponent
-) {
-  let itemSelectionChangedListener = () => {}
+): () => void {
+  let itemSelectionChangedListener = (): void => {}
   if (onSelect) {
     // display information about the current employee
-    itemSelectionChangedListener = () => {
+    itemSelectionChangedListener = (): void => {
       const selectedItems = graphComponent.selection.nodes
         .map(node => getOrgChartItem<TOrgChartItem>(node))
         .toArray()

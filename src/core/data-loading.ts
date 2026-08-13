@@ -1,20 +1,21 @@
 import {
   AdjacencyGraphBuilder,
-  AdjacencyNodesSource,
+  type AdjacencyNodesSource,
   Cycle,
   EdgeCreator,
+  type IEdgeStyle,
   type IGraph,
   type INode
 } from '@yfiles/yfiles'
 import type { OrgChartItem, OrgChartItemId } from '../OrgChart'
 import {
   convertToPolylineEdgeStyle,
-  EdgeStyle as ConnectionStyle,
-  NodeRenderInfo,
+  type EdgeStyle as ConnectionStyle,
+  type NodeRenderInfo,
   ReactComponentHtmlNodeStyle,
-  RenderNodeProps as RenderItemProps
+  type RenderNodeProps as RenderItemProps
 } from '@yworks/react-yfiles-core'
-import { ComponentType, Dispatch, SetStateAction } from 'react'
+import type { ComponentType, Dispatch, SetStateAction } from 'react'
 import { getNode } from '../OrgChartModel.ts'
 
 type OrgChartEdge<TOrgChartItem extends OrgChartItem> = {
@@ -39,7 +40,7 @@ export class GraphManager<TOrgChartItem extends OrgChartItem> {
     data: TOrgChartItem[],
     renderItem?: ComponentType<RenderItemProps<TOrgChartItem>> | undefined,
     connectionStyles?: (source: TOrgChartItem, target: TOrgChartItem) => ConnectionStyle | undefined
-  ) {
+  ): void {
     // find the new elements and mark them as incremental
     this.incrementalElements = compareData(this.data, data)
 
@@ -83,13 +84,13 @@ export function initializeGraphManager<TOrgChartItem extends OrgChartItem>(
       item.subordinates?.map((target: OrgChartItemId): OrgChartEdge<TOrgChartItem> => {
         return {
           source: item,
-          target: graphManager.data.find(item => item.id === target)!
+          target: graphManager.data.find((item: TOrgChartItem): boolean => item.id === target)!
         }
       }) ?? [],
-    (item: OrgChartEdge<TOrgChartItem>) => item.target?.id,
+    (item: OrgChartEdge<TOrgChartItem>): OrgChartItemId => item.target?.id,
     edgeCreator
   )
-  edgeCreator.styleProvider = (edge: OrgChartEdge<TOrgChartItem>) => {
+  edgeCreator.styleProvider = (edge: OrgChartEdge<TOrgChartItem>): IEdgeStyle | null => {
     if (graphManager.connectionStyles) {
       const edgeStyle = graphManager.connectionStyles(edge.source, edge.target)
       if (edgeStyle) {
@@ -98,7 +99,7 @@ export function initializeGraphManager<TOrgChartItem extends OrgChartItem>(
     }
     return null
   }
-  nodesSource.nodeCreator.styleProvider = () => {
+  nodesSource.nodeCreator.styleProvider = (): ReactComponentHtmlNodeStyle<TOrgChartItem> | null => {
     if (graphManager.renderItem) {
       return new ReactComponentHtmlNodeStyle(graphManager.renderItem, setNodeInfos)
     }
@@ -121,14 +122,14 @@ export function initializeGraphManager<TOrgChartItem extends OrgChartItem>(
     (item: TOrgChartItem) => getNode(item, graph)?.layout.y ?? 0
   )
 
-  nodesSource.nodeCreator.addEventListener('node-updated', (evt) => {
+  nodesSource.nodeCreator.addEventListener('node-updated', evt => {
     nodesSource!.nodeCreator.updateLayout(evt.graph, evt.item, evt.dataItem)
     nodesSource!.nodeCreator.updateStyle(evt.graph, evt.item, evt.dataItem)
     nodesSource!.nodeCreator.updateTag(evt.graph, evt.item, evt.dataItem)
     nodesSource!.nodeCreator.updateLabels(evt.graph, evt.item, evt.dataItem)
   })
 
-  edgeCreator.addEventListener('edge-updated', (evt) => {
+  edgeCreator.addEventListener('edge-updated', evt => {
     edgeCreator.updateStyle(evt.graph, evt.item, evt.dataItem)
     edgeCreator.updateTag(evt.graph, evt.item, evt.dataItem)
     edgeCreator.updateLabels(evt.graph, evt.item, evt.dataItem)
