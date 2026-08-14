@@ -1,12 +1,12 @@
 import {
-  EventArgs,
-  EventRecognizers,
-  GraphComponent,
-  GraphInputMode,
-  GraphItemTypes,
   Command,
+  type EventArgs,
+  EventRecognizers,
+  type GraphComponent,
+  type GraphInputMode,
+  GraphItemTypes,
   IModelItem,
-  KeyboardInputModeBinding
+  type KeyboardInputModeBinding
 } from '@yfiles/yfiles'
 
 type Recognizer = (evt: EventArgs, eventSource: any) => boolean
@@ -21,7 +21,7 @@ let oldMultiSelectionRecognizer: Recognizer | null = null
 /**
  * Restores the normal (multi-selection) behavior for the input mode and the commands of the given component.
  */
-export function disableSingleSelection(graphComponent: GraphComponent) {
+export function disableSingleSelection(graphComponent: GraphComponent): void {
   const mode = graphComponent.inputMode as GraphInputMode
   // restore old settings
   mode.marqueeSelectionInputMode.enabled = true
@@ -48,7 +48,7 @@ export function disableSingleSelection(graphComponent: GraphComponent) {
 /**
  * Enables single selection behavior for the input mode and the commands of the given component.
  */
-export function enableSingleSelection(graphComponent: GraphComponent) {
+export function enableSingleSelection(graphComponent: GraphComponent): void {
   const mode = graphComponent.inputMode as GraphInputMode
   // remember old recognizer so we can restore it later
   oldMultiSelectionRecognizer = mode.multiSelectionRecognizer

@@ -14,9 +14,7 @@
     "skipLibCheck": true,
     "sourceMap": true,
     "jsx": "react-jsx",
-    "moduleResolution": "node"
+    "moduleResolution": "bundler"
   },
-  "include": [
-    "src"
-  ],
+  "include": ["src"]
 }

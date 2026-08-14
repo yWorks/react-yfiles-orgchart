@@ -1,6 +1,6 @@
-import { GraphComponent, Command, IEdge, IGraph, INode } from '@yfiles/yfiles'
-import { OrgChartConnection, OrgChartItem } from './OrgChart'
-import { CollapsibleTree } from './core/CollapsibleTree'
+import { Command, type GraphComponent, type IEdge, type IGraph, type INode } from '@yfiles/yfiles'
+import type { OrgChartConnection, OrgChartItem } from './OrgChart'
+import { type CollapsibleTree } from './core/CollapsibleTree'
 import {
   exportImageAndSave,
   type ExportSettings,
@@ -161,15 +161,15 @@ export function createOrgChartModel(
 
   // this is a hack so we have something like `await nextTick()`
   // that we can use instead of `setTimeout()`
-  const setRenderedCallback = (cb: () => void) => {
+  const setRenderedCallback = (cb: () => void): void => {
     onRenderedCallback = cb
   }
-  const onRendered = () => {
+  const onRendered = (): void => {
     onRenderedCallback?.()
     onRenderedCallback = null
   }
 
-  function zoomTo(items: (OrgChartItem | OrgChartConnection<OrgChartItem>)[]) {
+  function zoomTo(items: (OrgChartItem | OrgChartConnection<OrgChartItem>)[]): void {
     if (items.length === 0) {
       return
     }

@@ -1,6 +1,6 @@
 {
   "name": "@yworks/react-yfiles-orgchart",
-  "version": "2.1.1",
+  "version": "3.0.0",
   "author": {
     "name": "yFiles for HTML team @ yWorks GmbH",
     "email": "yfileshtml@yworks.com"
@@ -38,23 +38,24 @@
   "types": "./dist/index.d.ts",
   "scripts": {
     "tsc": "tsc",
-    "dev": "tsup --watch --sourcemap --dts --format esm src/index.ts && api-extractor run --local",
-    "build": "tsup --clean --dts --format esm src/index.ts && api-extractor run --local"
+    "dev": "tsdown --watch --sourcemap --dts --format esm src/index.ts && api-extractor run --local",
+    "build": "tsdown --clean --dts --format esm src/index.ts && api-extractor run --local"
   },
   "peerDependencies": {
     "react": ">=18",
     "react-dom": ">=18",
-    "@yfiles/yfiles": ">=30"
+    "@yfiles/yfiles": ">=31"
   },
   "devDependencies": {
     "@types/react": ">=18",
     "@types/react-dom": ">=18",
-    "@microsoft/api-extractor": "^7.55.2",
-    "tsup": "^8.5.1",
-    "typescript": "^5.9.3"
+    "@microsoft/api-extractor": "^7.58.12",
+    "tsdown": "^0.22.14",
+    "@tsdown/css": "^0.22.14",
+    "typescript": "^6.0.3"
   },
   "dependencies": {
-    "@yworks/react-yfiles-core": "^3.1.0"
+    "@yworks/react-yfiles-core": "^4.0.0"
   },
   "files": [
     "LICENSE",
